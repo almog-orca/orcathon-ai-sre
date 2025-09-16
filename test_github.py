@@ -2,7 +2,7 @@
 
 import dotenv
 import os
-from github_tools import init_github_client, get_recent_merged_prs, get_recent_deployments, get_recent_commits, analyze_deployment_correlation
+from github_tools import init_github_client, get_recent_merged_prs, get_recent_deployments, get_recent_commits
 
 # Load environment variables
 dotenv.load_dotenv()
@@ -61,15 +61,6 @@ def test_github():
                 print(f"    Author: {commit['author']}")
         else:
             print("No commits found in the last 24 hours")
-
-        # Test correlation analysis with a sample incident time
-        print("\n--- Testing analyze_deployment_correlation ---")
-        from datetime import datetime, timezone
-        incident_time = datetime.now(timezone.utc).isoformat()
-
-        correlation = analyze_deployment_correlation(incident_time, service="orca", region="us-east-1")
-        print("Sample correlation analysis:")
-        print(correlation[:500] + "..." if len(correlation) > 500 else correlation)
 
         print("\n✅ All GitHub tests completed!")
 

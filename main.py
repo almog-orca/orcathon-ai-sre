@@ -7,6 +7,7 @@ from agno.agent import Agent
 from slack_tools import init_slack_client, get_slack_channels, get_slack_messages, get_slack_thread_replies, get_slack_user_info, get_slack_channel_info, fetch_slack_messages_with_threads, get_slack_client
 from confluence_tools import init_confluence_client, search_confluence_content, get_confluence_page_content, search_confluence_by_title
 from launchdarkly_tools import init_launchdarkly_client, get_all_feature_flags, check_feature_flag, enable_maintenance_mode, get_alert_thresholds
+from github_tools import init_github_client, get_recent_merged_prs, get_recent_deployments, get_recent_commits
 
 dotenv.load_dotenv()
 
@@ -19,6 +20,7 @@ print(AWS_PROFILE, AWS_REGION, MODEL)
 init_slack_client(os.getenv("SLACK_BOT_TOKEN"))
 init_confluence_client(os.getenv("CONFLUENCE_BASE_URL"), os.getenv("CONFLUENCE_TOKEN"), os.getenv("CONFLUENCE_EMAIL"))
 init_launchdarkly_client(os.getenv("LAUNCHDARKLY_SDK_KEY"))
+init_github_client(os.getenv("GITHUB_TOKEN"), os.getenv("GITHUB_ORG"), os.getenv("GITHUB_REPO"))
 
 session = Session(
     region_name=AWS_REGION,
@@ -49,7 +51,7 @@ agent = Agent(
 
     When you find requests in Slack, search the OPR documentation for related procedures and check relevant feature flags before providing responses.
     Write your responses in a clear, organized format with specific operational context."""),
-    tools=[DuckDuckGoTools(), get_slack_channels, get_slack_messages, get_slack_thread_replies,get_slack_user_info, get_slack_channel_info, fetch_slack_messages_with_threads, search_confluence_content, get_confluence_page_content, search_confluence_by_title, get_all_feature_flags, check_feature_flag, enable_maintenance_mode, get_alert_thresholds ],
+    tools=[DuckDuckGoTools(), get_slack_channels, get_slack_messages, get_slack_thread_replies,get_slack_user_info, get_slack_channel_info, fetch_slack_messages_with_threads, search_confluence_content, get_confluence_page_content, search_confluence_by_title, get_all_feature_flags, check_feature_flag, enable_maintenance_mode, get_alert_thresholds, get_recent_merged_prs, get_recent_deployments, get_recent_commits ],
     markdown=True,
     additional_context="""
     Today is 2025-09-16.
