@@ -2,7 +2,7 @@
 
 import dotenv
 import os
-from launchdarkly_tools import init_launchdarkly_client, get_all_feature_flags, check_sre_flag, enable_maintenance_mode, get_alert_thresholds
+from launchdarkly_tools import init_launchdarkly_client, get_all_feature_flags, check_feature_flag, enable_maintenance_mode, get_alert_thresholds
 
 # Load environment variables
 dotenv.load_dotenv()
@@ -27,8 +27,8 @@ def test_launchdarkly():
         print(flags)
 
         # Test checking specific flag
-        print("\n--- Testing check_sre_flag ---")
-        flag_status = check_sre_flag("maintenance-mode")
+        print("\n--- Testing check_feature_flag ---")
+        flag_status = check_feature_flag("maintenance-mode")
         print(flag_status)
 
         # Test maintenance mode

@@ -178,8 +178,8 @@ def get_all_feature_flags() -> str:
     except Exception as e:
         return f"Error retrieving feature flags: {e}"
 
-def check_sre_flag(flag_key: str) -> str:
-    """Check the status of a specific SRE feature flag."""
+def check_feature_flag(flag_key: str) -> str:
+    """Check the status of a specific feature flag."""
     try:
         details = get_feature_flag_details(flag_key)
         return f"Feature flag '{flag_key}':\n" \
