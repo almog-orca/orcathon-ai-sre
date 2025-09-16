@@ -350,8 +350,9 @@ def fetch_slack_messages_with_threads(
     """
     client = get_slack_client()
     
-    # Get base messages
-    messages = get_slack_messages(channel_id, start_date, end_date)
+    # Get base messages by calling the client directly
+    client = get_slack_client()
+    messages = client.get_messages(channel_id, start_date, end_date)
     
     # Process each message
     for message in messages:
