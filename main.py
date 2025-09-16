@@ -6,6 +6,7 @@ from agno.tools.duckduckgo import DuckDuckGoTools
 from agno.agent import Agent
 from slack_tools import init_slack_client, get_slack_channels, get_slack_messages, get_slack_thread_replies, get_slack_user_info, get_slack_channel_info, fetch_slack_messages_with_threads, get_slack_client
 from confluence_tools import init_confluence_client, search_confluence_content, get_confluence_page_content, search_confluence_by_title
+from launchdarkly_tools import init_launchdarkly_client, get_all_feature_flags, check_sre_flag, enable_maintenance_mode, get_alert_thresholds
 
 dotenv.load_dotenv()
 
@@ -17,6 +18,7 @@ print(AWS_PROFILE, AWS_REGION, MODEL)
 
 init_slack_client(os.getenv("SLACK_BOT_TOKEN"))
 init_confluence_client(os.getenv("CONFLUENCE_BASE_URL"), os.getenv("CONFLUENCE_TOKEN"), os.getenv("CONFLUENCE_EMAIL"))
+init_launchdarkly_client(os.getenv("LAUNCHDARKLY_SDK_KEY"))
 
 session = Session(
     region_name=AWS_REGION,
@@ -31,6 +33,7 @@ agent = Agent(
     1. Monitoring Slack channels for user requests and operational questions
     2. Searching the SRE Operations (OPR) Confluence space for relevant procedures, contacts, and documentation
     3. Providing clear, actionable guidance based on existing SRE operational documentation
+    4. Managing and monitoring feature flags via LaunchDarkly for operational controls
 
     You have access to the OPR team's Confluence space which contains:
     - SRE Operations procedures and runbooks
@@ -38,9 +41,15 @@ agent = Agent(
     - Operational workflows and approval processes
     - Incident response and troubleshooting guides
 
-    When you find requests in Slack, search the OPR documentation for related procedures and provide helpful responses with links to the relevant pages.
+    You also have access to LaunchDarkly feature flags to:
+    - Check maintenance mode status before performing operations
+    - Monitor SRE-specific feature flags and operational controls
+    - Check alert thresholds and system configuration flags
+    - Track operational events and flag usage
+
+    When you find requests in Slack, search the OPR documentation for related procedures and check relevant feature flags before providing responses.
     Write your responses in a clear, organized format with specific operational context."""),
-    tools=[DuckDuckGoTools(), get_slack_channels, get_slack_messages, get_slack_thread_replies,get_slack_user_info, get_slack_channel_info, fetch_slack_messages_with_threads, search_confluence_content, get_confluence_page_content, search_confluence_by_title ],
+    tools=[DuckDuckGoTools(), get_slack_channels, get_slack_messages, get_slack_thread_replies,get_slack_user_info, get_slack_channel_info, fetch_slack_messages_with_threads, search_confluence_content, get_confluence_page_content, search_confluence_by_title, get_all_feature_flags, check_sre_flag, enable_maintenance_mode, get_alert_thresholds ],
     markdown=True,
     additional_context="""
     Today is 2025-09-16.
