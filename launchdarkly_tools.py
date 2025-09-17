@@ -170,10 +170,8 @@ def get_all_feature_flags() -> str:
         if not all_flags:
             return "No feature flags found or LaunchDarkly client not properly initialized."
 
-        result = f"All Feature Flags ({len(all_flags)} total):\n"
-        for flag_key, value in all_flags.items():
-            result += f"- {flag_key}: {value}\n"
-
+        result = f"Feature Flags Summary ({len(all_flags)} total flags available)\n"
+        result += "Use check_feature_flag() to inspect specific flags as needed.\n"
         return result
     except Exception as e:
         return f"Error retrieving feature flags: {e}"
