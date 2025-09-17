@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
-import dotenv
 import os
-from github_tools import init_github_client, get_recent_merged_prs, get_recent_deployments, get_recent_commits, analyze_deployment_correlation
+
+import dotenv
+from github_tools import init_github_client, get_recent_github_merged_prs, get_recent_github_deployments, get_recent_github_commits, analyze_github_deployment_correlation
 
 # Load environment variables
 dotenv.load_dotenv()
@@ -29,8 +30,8 @@ def test_github():
         print(f"✅ GitHub client initialized for {github_org}/{github_repo}")
 
         # Test getting recent PRs
-        print("\n--- Testing get_recent_merged_prs (last 24 hours) ---")
-        prs = get_recent_merged_prs(hours=24)
+        print("\n--- Testing get_recent_github_merged_prs (last 24 hours) ---")
+        prs = get_recent_github_merged_prs(hours=24)
         if prs:
             print(f"Found {len(prs)} recently merged PRs")
             for pr in prs[:3]:  # Show first 3
@@ -40,8 +41,8 @@ def test_github():
             print("No PRs merged in the last 24 hours")
 
         # Test getting recent deployments
-        print("\n--- Testing get_recent_deployments (last 24 hours) ---")
-        deployments = get_recent_deployments(hours=24)
+        print("\n--- Testing get_recent_github_deployments (last 24 hours) ---")
+        deployments = get_recent_github_deployments(hours=24)
         if deployments:
             print(f"Found {len(deployments)} recent deployments")
             for deploy in deployments[:3]:  # Show first 3
@@ -52,8 +53,8 @@ def test_github():
             print("No deployments found in the last 24 hours")
 
         # Test getting recent commits
-        print("\n--- Testing get_recent_commits (last 24 hours) ---")
-        commits = get_recent_commits(hours=24)
+        print("\n--- Testing get_recent_github_commits (last 24 hours) ---")
+        commits = get_recent_github_commits(hours=24)
         if commits:
             print(f"Found {len(commits)} recent commits")
             for commit in commits[:3]:  # Show first 3
@@ -63,11 +64,11 @@ def test_github():
             print("No commits found in the last 24 hours")
 
         # Test correlation analysis with a sample incident time
-        print("\n--- Testing analyze_deployment_correlation ---")
+        print("\n--- Testing analyze_github_deployment_correlation ---")
         from datetime import datetime, timezone
         incident_time = datetime.now(timezone.utc).isoformat()
 
-        correlation = analyze_deployment_correlation(incident_time, service="orca", region="us-east-1")
+        correlation = analyze_github_deployment_correlation(incident_time, service="orca", region="us-east-1")
         print("Sample correlation analysis:")
         print(correlation[:500] + "..." if len(correlation) > 500 else correlation)
 

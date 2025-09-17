@@ -32,7 +32,7 @@ def get_launchdarkly_client():
         raise RuntimeError("LaunchDarkly client not initialized. Call init_launchdarkly_client() first.")
     return _ld_client
 
-def get_feature_flag(flag_key: str, user_context: Dict[str, Any] = None, default_value: bool = False) -> bool:
+def get_launchdarkly_feature_flag(flag_key: str, user_context: Dict[str, Any] = None, default_value: bool = False) -> bool:
     """
     Get the value of a feature flag for a given user context.
 
@@ -56,7 +56,7 @@ def get_feature_flag(flag_key: str, user_context: Dict[str, Any] = None, default
         print(f"Error getting feature flag {flag_key}: {e}")
         return default_value
 
-def get_feature_flag_details(flag_key: str, user_context: Dict[str, Any] = None, default_value: Any = None) -> Dict[str, Any]:
+def get_launchdarkly_feature_flag_details(flag_key: str, user_context: Dict[str, Any] = None, default_value: Any = None) -> Dict[str, Any]:
     """
     Get detailed information about a feature flag evaluation.
 
@@ -94,7 +94,7 @@ def get_feature_flag_details(flag_key: str, user_context: Dict[str, Any] = None,
             "is_default": True
         }
 
-def check_multiple_flags(flag_keys: List[str], user_context: Dict[str, Any] = None) -> Dict[str, bool]:
+def check_multiple_launchdarkly_flags(flag_keys: List[str], user_context: Dict[str, Any] = None) -> Dict[str, bool]:
     """
     Check multiple feature flags at once.
 
@@ -107,10 +107,10 @@ def check_multiple_flags(flag_keys: List[str], user_context: Dict[str, Any] = No
     """
     results = {}
     for flag_key in flag_keys:
-        results[flag_key] = get_feature_flag(flag_key, user_context)
+        results[flag_key] = get_launchdarkly_feature_flag(flag_key, user_context)
     return results
 
-def get_all_flags(user_context: Dict[str, Any] = None) -> Dict[str, Any]:
+def get_all_launchdarkly_flags(user_context: Dict[str, Any] = None) -> Dict[str, Any]:
     """
     Get all feature flags and their values for the given user context.
 
@@ -132,7 +132,7 @@ def get_all_flags(user_context: Dict[str, Any] = None) -> Dict[str, Any]:
         print(f"Error getting all flags: {e}")
         return {}
 
-def track_custom_event(event_name: str, user_context: Dict[str, Any] = None, data: Dict[str, Any] = None):
+def track_launchdarkly_custom_event(event_name: str, user_context: Dict[str, Any] = None, data: Dict[str, Any] = None):
     """
     Track a custom event in LaunchDarkly.
 
@@ -163,23 +163,23 @@ def close_launchdarkly_client():
 
 # Agent tool functions (these will be used by the AI agent)
 
-def get_all_feature_flags() -> str:
+def get_all_launchdarkly_feature_flags() -> str:
     """Get all feature flags and their current status."""
     try:
-        all_flags = get_all_flags()
+        all_flags = get_all_launchdarkly_flags()
         if not all_flags:
             return "No feature flags found or LaunchDarkly client not properly initialized."
 
         result = f"Feature Flags Summary ({len(all_flags)} total flags available)\n"
-        result += "Use check_feature_flag() to inspect specific flags as needed.\n"
+        result += "Use check_launchdarkly_feature_flag() to inspect specific flags as needed.\n"
         return result
     except Exception as e:
         return f"Error retrieving feature flags: {e}"
 
-def check_feature_flag(flag_key: str) -> str:
+def check_launchdarkly_feature_flag(flag_key: str) -> str:
     """Check the status of a specific feature flag."""
     try:
-        details = get_feature_flag_details(flag_key)
+        details = get_launchdarkly_feature_flag_details(flag_key)
         return f"Feature flag '{flag_key}':\n" \
                f"- Value: {details['value']}\n" \
                f"- Variation: {details['variation_index']}\n" \
@@ -188,26 +188,26 @@ def check_feature_flag(flag_key: str) -> str:
     except Exception as e:
         return f"Error checking feature flag '{flag_key}': {e}"
 
-def enable_maintenance_mode() -> str:
+def enable_launchdarkly_maintenance_mode() -> str:
     """Check if maintenance mode is enabled via feature flag."""
     try:
-        is_enabled = get_feature_flag("maintenance-mode", default_value=False)
+        is_enabled = get_launchdarkly_feature_flag("maintenance-mode", default_value=False)
         if is_enabled:
-            track_custom_event("maintenance_mode_checked", data={"status": "enabled"})
+            track_launchdarkly_custom_event("maintenance_mode_checked", data={"status": "enabled"})
             return "🚨 Maintenance mode is ENABLED. Some SRE operations may be restricted."
         else:
-            track_custom_event("maintenance_mode_checked", data={"status": "disabled"})
+            track_launchdarkly_custom_event("maintenance_mode_checked", data={"status": "disabled"})
             return "✅ Maintenance mode is disabled. Normal operations active."
     except Exception as e:
         return f"Error checking maintenance mode: {e}"
 
-def get_alert_thresholds() -> str:
+def get_launchdarkly_alert_thresholds() -> str:
     """Get current alert thresholds from feature flags."""
     try:
         # These would be JSON flags or numeric flags in your LaunchDarkly setup
-        cpu_threshold = get_feature_flag("cpu-alert-threshold", default_value=80)
-        memory_threshold = get_feature_flag("memory-alert-threshold", default_value=85)
-        disk_threshold = get_feature_flag("disk-alert-threshold", default_value=90)
+        cpu_threshold = get_launchdarkly_feature_flag("cpu-alert-threshold", default_value=80)
+        memory_threshold = get_launchdarkly_feature_flag("memory-alert-threshold", default_value=85)
+        disk_threshold = get_launchdarkly_feature_flag("disk-alert-threshold", default_value=90)
 
         return f"Current Alert Thresholds:\n" \
                f"- CPU: {cpu_threshold}%\n" \

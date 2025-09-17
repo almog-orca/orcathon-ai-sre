@@ -1,13 +1,14 @@
 import dotenv
 import os
 from textwrap import dedent
-from agno.models.aws.bedrock import AwsBedrock,Session
-from agno.tools.duckduckgo import DuckDuckGoTools
+
 from agno.agent import Agent
-from slack_tools import init_slack_client, get_slack_channels, get_slack_messages, get_slack_thread_replies, get_slack_user_info, get_slack_channel_info, fetch_slack_messages_with_threads, get_slack_client
+from agno.models.aws.bedrock import AwsBedrock, Session
+from agno.tools.duckduckgo import DuckDuckGoTools
 from confluence_tools import init_confluence_client, search_confluence_content, get_confluence_page_content, search_confluence_by_title
-from launchdarkly_tools import init_launchdarkly_client, get_all_feature_flags, check_feature_flag, enable_maintenance_mode, get_alert_thresholds
-from github_tools import init_github_client, get_recent_merged_prs, get_recent_deployments, get_recent_commits, analyze_deployment_correlation
+from github_tools import init_github_client, get_recent_github_merged_prs, get_recent_github_deployments, get_recent_github_commits, analyze_github_deployment_correlation
+from launchdarkly_tools import init_launchdarkly_client, get_all_launchdarkly_feature_flags, check_launchdarkly_feature_flag, enable_launchdarkly_maintenance_mode, get_launchdarkly_alert_thresholds
+from slack_tools import init_slack_client, get_slack_channels, get_slack_messages, get_slack_thread_replies, get_slack_user_info, get_slack_channel_info, fetch_slack_messages_with_threads, get_slack_client
 
 dotenv.load_dotenv()
 
@@ -56,18 +57,18 @@ agent = Agent(
     - Look for correlations between incident timing and recent code changes
     - Check if any feature flags were modified around the incident time
     - Provide timeline-based analysis showing what changed before the incident
-    - Use analyze_deployment_correlation() function for comprehensive correlation analysis
+    - Use analyze_github_deployment_correlation() function for comprehensive correlation analysis
 
     **Incident Analysis Workflow:**
     1. When an incident is reported, extract the incident time, service, and region
-    2. Run analyze_deployment_correlation() with these parameters
+    2. Run analyze_github_deployment_correlation() with these parameters
     3. Check recent feature flag changes that might relate to the service/region
     4. Provide a comprehensive analysis of potential causes based on recent changes
     5. Search confluence for relevant runbooks for the affected service
 
     When you find requests in Slack, search the OPR documentation for related procedures, check relevant feature flags, and perform deployment correlation analysis for incident reports.
     Write your responses in a clear, organized format with specific operational context and deployment correlation insights."""),
-    tools=[DuckDuckGoTools(), get_slack_channels, get_slack_messages, get_slack_thread_replies,get_slack_user_info, get_slack_channel_info, fetch_slack_messages_with_threads, search_confluence_content, get_confluence_page_content, search_confluence_by_title, get_all_feature_flags, check_feature_flag, enable_maintenance_mode, get_alert_thresholds, get_recent_merged_prs, get_recent_deployments, get_recent_commits, analyze_deployment_correlation ],
+    tools=[DuckDuckGoTools(), get_slack_channels, get_slack_messages, get_slack_thread_replies,get_slack_user_info, get_slack_channel_info, fetch_slack_messages_with_threads, search_confluence_content, get_confluence_page_content, search_confluence_by_title, get_all_launchdarkly_feature_flags, check_launchdarkly_feature_flag, enable_launchdarkly_maintenance_mode, get_launchdarkly_alert_thresholds, get_recent_github_merged_prs, get_recent_github_deployments, get_recent_github_commits, analyze_github_deployment_correlation ],
     markdown=True,
     additional_context="""
     Today is 2025-09-16.
@@ -78,7 +79,7 @@ agent = Agent(
     debug_level=3,
 )
 agent.print_response("""
-Search the C076NHGBK8E Slack channel for user requests and questions. Today is 2025-09-16.
+Search the C076NHGBK8E Slack channel for user requests and questions. Today is 2025-09-17.
 Review messages from the last 24 hours, looking for:
 
 1. **Direct questions** - Users asking "how do I...", "what's the process for...", "where can I find..."

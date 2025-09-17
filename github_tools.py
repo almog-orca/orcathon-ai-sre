@@ -34,7 +34,7 @@ def get_github_client():
         raise RuntimeError("GitHub client not initialized. Call init_github_client() first.")
     return _github_client
 
-def get_recent_merged_prs(hours: int = 24, repo: str = None) -> List[Dict[str, Any]]:
+def get_recent_github_merged_prs(hours: int = 24, repo: str = None) -> List[Dict[str, Any]]:
     """
     Get recently merged pull requests.
 
@@ -89,7 +89,7 @@ def get_recent_merged_prs(hours: int = 24, repo: str = None) -> List[Dict[str, A
         print(f"Error getting recent PRs: {e}")
         return []
 
-def get_recent_deployments(hours: int = 24, repo: str = None, environment: str = None) -> List[Dict[str, Any]]:
+def get_recent_github_deployments(hours: int = 24, repo: str = None, environment: str = None) -> List[Dict[str, Any]]:
     """
     Get recent deployments from GitHub.
 
@@ -152,7 +152,7 @@ def get_recent_deployments(hours: int = 24, repo: str = None, environment: str =
         print(f"Error getting recent deployments: {e}")
         return []
 
-def get_recent_commits(hours: int = 24, repo: str = None, branch: str = "main") -> List[Dict[str, Any]]:
+def get_recent_github_commits(hours: int = 24, repo: str = None, branch: str = "main") -> List[Dict[str, Any]]:
     """
     Get recent commits to a repository.
 
@@ -202,7 +202,7 @@ def get_recent_commits(hours: int = 24, repo: str = None, branch: str = "main") 
         print(f"Error getting recent commits: {e}")
         return []
 
-def get_deployment_by_service_region(service: str, region: str = None, hours: int = 24) -> List[Dict[str, Any]]:
+def get_github_deployment_by_service_region(service: str, region: str = None, hours: int = 24) -> List[Dict[str, Any]]:
     """
     Get deployments filtered by service and optionally region.
 
@@ -216,7 +216,7 @@ def get_deployment_by_service_region(service: str, region: str = None, hours: in
     """
     try:
         # Get all recent deployments
-        deployments = get_recent_deployments(hours=hours)
+        deployments = get_recent_github_deployments(hours=hours)
 
         # Filter by service and region
         filtered_deployments = []
@@ -250,7 +250,7 @@ def get_deployment_by_service_region(service: str, region: str = None, hours: in
         print(f"Error filtering deployments by service/region: {e}")
         return []
 
-def analyze_deployment_correlation(incident_time: str, service: str = None, region: str = None) -> str:
+def analyze_github_deployment_correlation(incident_time: str, service: str = None, region: str = None) -> str:
     """
     Analyze potential correlation between incident and recent deployments.
 
@@ -270,12 +270,12 @@ def analyze_deployment_correlation(incident_time: str, service: str = None, regi
         hours_to_check = 6
 
         # Get recent activity
-        prs = get_recent_merged_prs(hours=hours_to_check)
-        deployments = get_recent_deployments(hours=hours_to_check)
+        prs = get_recent_github_merged_prs(hours=hours_to_check)
+        deployments = get_recent_github_deployments(hours=hours_to_check)
 
         # Filter by service/region if provided
         if service:
-            deployments = get_deployment_by_service_region(service, region, hours=hours_to_check)
+            deployments = get_github_deployment_by_service_region(service, region, hours=hours_to_check)
 
         result = f"🔍 **Deployment Correlation Analysis**\n"
         result += f"Incident Time: {incident_time}\n"
@@ -345,9 +345,9 @@ def analyze_deployment_correlation(incident_time: str, service: str = None, regi
 def get_recent_github_activity(hours: int = 24) -> str:
     """Get recent GitHub activity including PRs, deployments, and commits."""
     try:
-        prs = get_recent_merged_prs(hours=hours)
-        deployments = get_recent_deployments(hours=hours)
-        commits = get_recent_commits(hours=hours)
+        prs = get_recent_github_merged_prs(hours=hours)
+        deployments = get_recent_github_deployments(hours=hours)
+        commits = get_recent_github_commits(hours=hours)
 
         result = f"Recent GitHub Activity (last {hours} hours):\n\n"
 

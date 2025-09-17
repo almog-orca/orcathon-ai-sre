@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 
-import dotenv
 import os
 from textwrap import dedent
-from agno.models.aws.bedrock import AwsBedrock, Session
+
+import dotenv
 from agno.agent import Agent
-from slack_tools import init_slack_client, get_slack_channels, get_slack_messages
-from github_tools import init_github_client, get_recent_merged_prs, get_recent_deployments, analyze_deployment_correlation
+from agno.models.aws.bedrock import AwsBedrock, Session
+from github_tools import init_github_client, get_recent_github_merged_prs, get_recent_github_deployments, analyze_github_deployment_correlation
 from launchdarkly_tools import init_launchdarkly_client, check_feature_flag
+from slack_tools import init_slack_client, get_slack_channels, get_slack_messages
 
 dotenv.load_dotenv()
 
@@ -32,7 +33,7 @@ incident_agent = Agent(
     1. Find incident reports in scan-officer channel (GQS8W231C)
     2. Extract incident details (time, service, region, error description)
     3. Check gradual-rollouts channel (C02PKC70HEZ) for deployment activity around incident timeframe
-    4. Run analyze_deployment_correlation() to find related deployments/PRs from GitHub
+    4. Run analyze_github_deployment_correlation() to find related deployments/PRs from GitHub
     5. Check relevant feature flags that might have changed around incident time
     6. Correlate deployment messages in gradual-rollouts with incident timing
     7. Provide comprehensive cross-channel root cause analysis
@@ -49,9 +50,9 @@ incident_agent = Agent(
 
     tools=[
         get_slack_messages,
-        get_recent_merged_prs,
-        get_recent_deployments,
-        analyze_deployment_correlation,
+        get_recent_github_merged_prs,
+        get_recent_github_deployments,
+        analyze_github_deployment_correlation,
         check_feature_flag
     ],
     markdown=True
@@ -76,7 +77,7 @@ def analyze_incidents_with_rollout_correlation():
     - Look for rollout announcements, deployment notifications, or release messages
 
     **STEP 3: GitHub Correlation**
-    - Run analyze_deployment_correlation() with incident parameters
+    - Run analyze_github_deployment_correlation() with incident parameters
     - Look for PRs, merges, and deployments within 6 hours of each incident
 
     **STEP 4: Feature Flag Analysis**
@@ -105,7 +106,7 @@ def analyze_single_incident_channel(channel_id: str = "GQS8W231C"):
 
     For each incident found:
     1. Extract incident time, affected service, and region
-    2. Run analyze_deployment_correlation() with those parameters
+    2. Run analyze_github_deployment_correlation() with those parameters
     3. Check relevant feature flags (maintenance-mode, circuit-breaker, rate-limiting, etc.)
     4. Provide comprehensive correlation analysis
 

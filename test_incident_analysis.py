@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 
-import dotenv
 import os
 from datetime import datetime, timezone
-from github_tools import init_github_client, analyze_deployment_correlation
+
+import dotenv
+from github_tools import init_github_client, analyze_github_deployment_correlation
 from launchdarkly_tools import init_launchdarkly_client, check_feature_flag
 
 # Load environment variables
@@ -33,7 +34,7 @@ def test_incident_correlation():
     print("="*60)
 
     # Run correlation analysis
-    correlation_report = analyze_deployment_correlation(incident_time, service, region)
+    correlation_report = analyze_github_deployment_correlation(incident_time, service, region)
     print(correlation_report)
 
     print(f"\n" + "="*60)
