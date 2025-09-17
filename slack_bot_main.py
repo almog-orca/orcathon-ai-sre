@@ -22,6 +22,7 @@ import hmac
 import time
 from dotenv import load_dotenv
 from slack_tools import init_slack_client, get_slack_client
+from main import run_agent_sre_support
 
 # Load environment variables
 load_dotenv()
@@ -110,7 +111,11 @@ def slack_events():
         event_type = event.get('type')
         
         if event_type == 'app_mention':
-            handle_app_mention(event)
+            # Skip if this is a bot message to avoid loops
+            if event.get('bot_id'):
+                logger.info("Ignoring app_mention from bot to avoid loops")
+            else:
+                handle_app_mention(event)
         elif event_type == 'message':
             # Handle both mentions and check for bot mentions in regular messages
             text = event.get('text', '')
@@ -129,7 +134,7 @@ def slack_events():
 
 def handle_app_mention(event):
     """
-    Handle app mention events and print the message.
+    Handle app mention events, print the message, and call the SRE agent.
     """
     try:
         # Extract event data
@@ -163,6 +168,32 @@ def handle_app_mention(event):
         
         # Log the mention
         logger.info(f"Bot mentioned by {user_name} in #{channel_name}: {text}")
+        
+        # Call the SRE agent with the message content
+        try:
+            print("\n🔄 Processing message with SRE agent...")
+            logger.info("Calling SRE agent to process the message")
+            
+            # Clean the message text (remove bot mention tags)
+            clean_message = text
+            if '<@' in clean_message:
+                # Remove bot mention tags like <@U1234567890>
+                import re
+                clean_message = re.sub(r'<@[A-Z0-9]+>', '', clean_message).strip()
+            
+            print(f"Cleaned message: {clean_message}")
+            # Call the agent function with the cleaned message using print_response for console output
+            print("\n🤖 AGENT PROCESSING AND RESPONSE:")
+            print("="*80)
+            run_agent_sre_support(clean_message)
+            print("="*80)
+            
+            print("\n✅ SRE agent processing completed")
+            logger.info("SRE agent processing completed successfully")
+            
+        except Exception as agent_error:
+            logger.error(f"Error calling SRE agent: {agent_error}")
+            print(f"\n❌ Error calling SRE agent: {agent_error}")
         
     except Exception as e:
         logger.error(f"Error handling app mention: {e}")
