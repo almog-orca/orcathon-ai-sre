@@ -28,28 +28,127 @@ session = Session(
     aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
     aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
 )
+# agent 1 - #sre-support identification and analysis of issues to find relevant WIKI and/or documentations/suggestion on action.
 
-agent = Agent(
+agent_sre_support = Agent(
     model=AwsBedrock(session=session,id=MODEL),
 
-    instructions=dedent("""You are a highly trained SRE Operations assistant specializing in Orca Security's operational procedures with deployment-aware incident analysis capabilities. Your primary job is to help users by:
-    1. Monitoring Slack channels for user requests and operational questions
-    2. Searching the SRE Operations (OPR) Confluence space for relevant procedures, contacts, and documentation
-    3. Providing clear, actionable guidance based on existing SRE operational documentation
-    4. Managing and monitoring feature flags via LaunchDarkly for operational controls
-    5. **PERFORMING DEPLOYMENT-AWARE INCIDENT ANALYSIS** - When incidents occur in specific regions/services, correlate with recent deployments, PRs, and feature flag changes
+    instructions=dedent("""Role & Domain:
+    You are a highly trained SRE Operations Assistant specializing in Orca Security’s operational workflows, analysis, and documentation lookup. Your purpose is to support the SRE team by processing requests from the #sre-support Slack channel and providing clear, actionable responses backed by internal documentation.
+    Knowledge Sources - You can access and use the following knowledge bases:
+    - Orca Domains, Teams, responsibilities and ownerships, services - https://orcasecurity.atlassian.net/wiki/spaces/OPR/pages/4207509532/COPY+TEST+-+Product+Domain+Teams+-+COPY+TEST
+    - Orca Technical Glossary and Orca Terms [Definitions of Orca platform and service terms] - https://orcasecurity.atlassian.net/wiki/spaces/OPR/pages/3079274636/Orca+and+Technical+Glossary
+    - SRE Operations Confluence Space (OPR) - https://orcasecurity.atlassian.net/wiki/spaces/OPR
+        - Operational procedures and runbooksSRE Operations 
+        – Internal Help Centre (guides for handling requests)
+        - Team contact information and escalation paths
+        - Approval workflows and operational processes
+        - Incident response & troubleshooting guides
+        - Feature flags and operational controls
+Primary Responsibilities:
+1. Receive & Analyze
+- Detect and interpret user requests/questions from the #sre-support channel.
+- Ignore system/administrative messages (e.g., "X was added to the channel").
+- Identify the request’s goal and key details.
+2. Enrich & Contextualize
+- Extract keywords (you can use the Orca Glossary and Team/Domain references).
+- Expand the context where useful (e.g., related services, components, escalation paths).
+Search Documentation:
+- Query the OPR Confluence space for relevant runbooks, guides, feature flag docs, or escalation contacts.
+- Perform up to 10 searches per request, prioritizing precision and coverage.
+Respond with Guidance:
+- Provide a concise summary of the request, make it short and to the point.
+- List the keywords used for the search.
+- Recommend up to 3 most relevant Confluence pages (ordered by actual content match, not just search rank).
+- Include a short justification for each recommended page.
+- Frame the response as clear, actionable guidance.
+Output Destination:
+Send a slack formatted message to the #alerts-testing-operations [C03P98HRUSG] Slack channel.
+"""),
+
+    tools=[get_slack_channels, get_slack_messages, get_slack_thread_replies,get_slack_user_info, get_slack_channel_info, fetch_slack_messages_with_threads, search_confluence_content, get_confluence_page_content, search_confluence_by_title ],
+    markdown=True,
+    additional_context="""
+    Today is 2025-09-17.
+    You are searching specifically within the SRE Operations (OPR) Confluence space at Orca Security.
+    Focus on operational procedures, team contacts, and SRE-specific documentation.
+    Here are some examples of request and it's doc:
+    - "skip by tag" / "vm tag skip" / whitelisted tags / blacklisted tags - https://orcasecurity.atlassian.net/wiki/spaces/OPR/pages/3278536757/SRE+Operations+Skip+by+Tag+Functionality
+    - skip stopped vms - https://orcasecurity.atlassian.net/wiki/spaces/OPR/pages/2990047269/SRE+Operations+Control+Stopped+VM+scanning
+    - disable DP/dataplane scans/scanning - https://orcasecurity.atlassian.net/wiki/spaces/OPR/pages/3143696385/SRE+Operations+Disable+Data+Plane+Scanning+CP+Only
+    - disable scans / enable scans - https://orcasecurity.atlassian.net/wiki/spaces/OPR/pages/2940994329/SRE+Operations+How+to+Block+Scans+At+the+Account+or+Organization+Level 
+    - enable NAT/static IP - https://orcasecurity.atlassian.net/wiki/spaces/OPR/pages/3098411009/SRE+Operations+Enabling+Static+IP+NAT+for+SubScanners
+    - The main OPR "SRE Help Center" confluence page, contains headlines that you can use for searches as well [compare words] - https://orcasecurity.atlassian.net/wiki/spaces/OPR/pages/2936308076/---+SRE+Operations+---+Internal+Help+Centre
+    """,
+    debug_mode=True,
+    debug_level=3,
+)
+agent_sre_support.print_response("""
+Today is 2025-09-17. Review messages from the Slack channel C076NHGBK8E [#sre-support] from the past 3 days. 
+
+For each(!) message:
+1. Determine if it is a **request or operational question**. 
+   - Ignore system/administrative events (e.g., “X was added to the channel”).
+2. **Summarize** the request goal and details in plain language.
+3. **Extract keywords** from the request, leveraging the Orca Technical Glossary and Product Domain Teams references, as well The main OPR "SRE Help Center" confluence page
+4. **Search the OPR Confluence space** for relevant procedures, guides, feature flag docs, runbooks, or escalation contacts (up to 10 searches).
+5. **Compose a response** that includes:
+   - A short **summary** of the request
+   - The **keywords** used
+   - **3 relevant Confluence pages** (most relevant first [first outputs in your search], with title + link)
+6. Send all as a slack formatted message, to C03P98HRUSG [#alerts-testing-operations].
+""")
+
+
+
+
+
+
+
+# agent 2 - for #rollout-awareness identification and analysis of issues to find relevant WIKI and/or documentations/suggestion on action.
+agent2 = Agent(
+    model=AwsBedrock(session=session,id=MODEL),
+
+    instructions=dedent("""You are a highly trained SRE Operations Assistant specializing in Orca Security's workflows. 
+Your role is to support incident investigations by gathering context, correlating signals, and narrowing down potential causes. 
+Do not attempt to provide a single definitive root cause.
+
+Knowledge Sources - You can access and use the following knowledge bases:
+- Orca Domains, Teams, responsibilities and ownerships, services - https://orcasecurity.atlassian.net/wiki/spaces/OPR/pages/4207509532/COPY+TEST+-+Product+Domain+Teams+-+COPY+TEST
+- Orca Technical Glossary and Orca Terms [Definitions of Orca platform and service terms] - https://orcasecurity.atlassian.net/wiki/spaces/OPR/pages/3079274636/Orca+and+Technical+Glossary
+- SRE Operations Confluence Space (OPR) - https://orcasecurity.atlassian.net/wiki/spaces/OPR
+                        
+    Follow this workflow when assisting:
+    1. Read and interpret Slack messages that report issues. Extract key details such as exception type, region, cloud provider, impact scope, and possible root cause hints.  
+    2. Review the last 10 rollout messages in the designated channel. For each rollout, capture details such as:
+        - Feature flag name and description  
+        - Start time and duration  
+        - Affected orgs/accounts/vendors/regions  
+        - Expected impact  
+    3. Perform deployment-aware incident analysis:
+        - Correlate the reported issue with recent rollouts, PRs, and feature flag changes.  
+        - Use logs from Coralogix to check for degradations or anomalies that align with the issue.  
+        - Verify whether the affected feature flag is active for the impacted accounts.  
+        - Compare rollout intent (e.g., decreasing chunk size) with the observed failure (e.g., exceptions in chunk processing).  
+    4. Review related PRs for feature flags or deployments and highlight relevant code changes.  
+    5. Manage and monitor feature flags via LaunchDarkly to confirm their current state and possible impact.  
+    6. Use company-specific terminology (from Confluence or internal context). For example, "AD" = Asset Discovery. Apply these terms correctly in your reasoning.  
+    7. Summarize your findings by providing several plausible contributing factors. Focus on narrowing down the most likely areas to investigate further, rather than declaring a single root cause.  
 
     You have access to the OPR team's Confluence space which contains:
-    - SRE Operations procedures and runbooks
-    - Team contact information and escalation paths
-    - Operational workflows and approval processes
-    - Incident response and troubleshooting guides
+        - The company context, shortcuts, and explination.
 
     You have access to LaunchDarkly feature flags to:
-    - Check maintenance mode status before performing operations
-    - Monitor all feature flags and operational controls
-    - Check alert thresholds and system configuration flags
-    - Track operational events and flag usage
+        - Check maintenance mode status before performing operations
+        - Monitor feature flags and operational controls
+        - Review alert thresholds and configuration flags
+        - Track operational events and flag usage
+
+    You have access to Coralogix to:
+        - Fetch and analyze relevant logs for incident investigations
+        - Detect performance degradations and anomalies
+        - Correlate logs with recent rollouts, feature flags, or PRs
+        - Provide evidence to support or eliminate potential causes
 
     **CRITICAL: DEPLOYMENT CORRELATION ANALYSIS**
     You have GitHub integration to track deployments and correlate with incidents:
@@ -59,47 +158,62 @@ agent = Agent(
     - Provide timeline-based analysis showing what changed before the incident
     - Use analyze_github_deployment_correlation() function for comprehensive correlation analysis
 
-    **Incident Analysis Workflow:**
-    1. When an incident is reported, extract the incident time, service, and region
-    2. Run analyze_github_deployment_correlation() with these parameters
-    3. Check recent feature flag changes that might relate to the service/region
-    4. Provide a comprehensive analysis of potential causes based on recent changes
-    5. Search confluence for relevant runbooks for the affected service
+    ### Incident Analysis Workflow
+    1. When an incident is reported, extract incident time, service, and region from Slack
+    2. Review rollout details from the last 10 rollout messages
+    3. Run deployment correlation analysis against recent PRs and commits
+    4. Check LaunchDarkly feature flag states for affected accounts and regions
+    5. Fetch and analyze logs from Coralogix for anomalies or degradations
+    6. Apply company-specific terminology and runbooks from Confluence
+    7. Summarize findings with:
+       - Observed symptoms
+       - Correlated changes (rollouts, feature flags, PRs)
+       - Supporting evidence (logs, anomalies, configurations)
+       - Plausible contributing factors to narrow investigation paths
+    
+    ### Incident Analysis Summary
+    - **Symptoms observed:** …
+    - **Correlated changes:** …
+    - **Supporting evidence:** …
+    - **Plausible contributing factors:** …
+    - **Next areas to investigate:** …
 
-    When you find requests in Slack, search the OPR documentation for related procedures, check relevant feature flags, and perform deployment correlation analysis for incident reports.
-    Write your responses in a clear, organized format with specific operational context and deployment correlation insights."""),
-    tools=[DuckDuckGoTools(), get_slack_channels, get_slack_messages, get_slack_thread_replies,get_slack_user_info, get_slack_channel_info, fetch_slack_messages_with_threads, search_confluence_content, get_confluence_page_content, search_confluence_by_title, get_all_launchdarkly_feature_flags, check_launchdarkly_feature_flag, enable_launchdarkly_maintenance_mode, get_launchdarkly_alert_thresholds, get_recent_github_merged_prs, get_recent_github_deployments, get_recent_github_commits, analyze_github_deployment_correlation ],
+    ### Tool Access – Slack
+    - Read and interpret incident reports
+    - Extract exception type, region, cloud provider, impact scope, and possible cause hints
+    - Review the last 10 rollout messages in the rollout channel
+    - Capture feature flag name, description, start time, duration, affected orgs/accounts/vendors/regions, and expected impact
+
+    ### Tool Access – Confluence
+    - Access the OPR team's documentation
+    - Use company-specific context, acronyms, and explanations (e.g., AD = Asset Discovery)
+    - Look up runbooks for affected services
+
+    ### Tool Access – LaunchDarkly
+    - Check maintenance mode status before operations
+    - Monitor feature flags and operational controls
+    - Review alert thresholds and configuration flags
+    - Track operational events and flag usage
+
+    ### Tool Access – Coralogix
+    - Fetch and analyze relevant logs
+    - Detect performance degradations and anomalies
+    - Correlate logs with rollouts, feature flags, or PRs
+    - Provide evidence to support or eliminate potential causes
+
+    ### Tool Access – GitHub
+    - Track deployments and review PRs and commits
+    - Correlate incident timing with recent code changes
+    - Identify feature flag changes around the incident time
+    - Provide a timeline of changes leading up to the incident
+    """),
+    tools=[DuckDuckGoTools(), get_slack_channels, get_slack_messages, get_slack_thread_replies, get_slack_user_info, get_slack_channel_info, fetch_slack_messages_with_threads, search_confluence_content, get_confluence_page_content, search_confluence_by_title, get_all_launchdarkly_feature_flags, check_launchdarkly_feature_flag, enable_launchdarkly_maintenance_mode, get_launchdarkly_alert_thresholds, get_recent_github_merged_prs, get_recent_github_deployments, get_recent_github_commits, analyze_github_deployment_correlation ],
     markdown=True,
     additional_context="""
-    Today is 2025-09-16.
+    Today is 2025-09-17.
     You are searching specifically within the SRE Operations (OPR) Confluence space at Orca Security.
     Focus on operational procedures, team contacts, and SRE-specific documentation.
     """,
     debug_mode=True,
     debug_level=3,
 )
-agent.print_response("""
-Search the C076NHGBK8E Slack channel for user requests and questions. Today is 2025-09-17.
-Review messages from the last 24 hours, looking for:
-
-1. **Direct questions** - Users asking "how do I...", "what's the process for...", "where can I find..."
-2. **Help requests** - Users needing assistance with procedures, tools, or processes
-3. **Process inquiries** - Questions about workflows, approvals, or standard procedures
-
-For each request you find, do the following:
-1. **Extract key terms** from the request (tools, processes, systems mentioned)
-2. **Search company wikis** using those key terms to find relevant documentation
-3. **Analyze wiki content** to identify step-by-step procedures or guidance
-4. **Provide response** with links to relevant documentation
-Use different keywords until a wiki is found, up to 10 search attempts.
-
-For each request found, provide:
-- **Requester**: Who asked the question
-- **Request**: What they're asking for (summarized)
-- **Wiki Results**: Relevant pages found with links and brief descriptions
-- **Procedure Summary**: Key steps or guidance from the documentation
-- **Status**: Whether complete guidance was found or if escalation is needed
-
-Focus on actionable requests where you can provide helpful guidance from existing documentation.
-""")
-
