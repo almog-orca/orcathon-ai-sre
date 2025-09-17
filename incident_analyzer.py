@@ -7,7 +7,7 @@ import dotenv
 from agno.agent import Agent
 from agno.models.aws.bedrock import AwsBedrock, Session
 from github_tools import init_github_client, get_recent_github_merged_prs, get_recent_github_deployments, analyze_github_deployment_correlation
-from launchdarkly_tools import init_launchdarkly_client, check_feature_flag
+from launchdarkly_tools import init_launchdarkly_client, check_launchdarkly_feature_flag
 from slack_tools import init_slack_client, get_slack_channels, get_slack_messages
 
 dotenv.load_dotenv()
@@ -32,36 +32,40 @@ incident_agent = Agent(
     **MULTI-CHANNEL INCIDENT CORRELATION ANALYSIS**
     1. Find incident reports in scan-officer channel (GQS8W231C)
     2. Extract incident details (time, service, region, error description)
-    3. Check gradual-rollouts channel (C02PKC70HEZ) for deployment activity around incident timeframe
+    3. Check deployment channels for activity around incident timeframe:
+       - gradual-rollouts channel (C02PKC70HEZ) for gradual rollouts and feature flag changes
+       - production channel (CJP11G7UK) for production deployments and releases
     4. Run analyze_github_deployment_correlation() to find related deployments/PRs from GitHub
     5. Check relevant feature flags that might have changed around incident time
-    6. Correlate deployment messages in gradual-rollouts with incident timing
+    6. Correlate deployment messages across all deployment channels with incident timing
     7. Provide comprehensive cross-channel root cause analysis
 
     **For each incident, provide:**
     - **Incident Summary**: What happened and when
-    - **Gradual Rollouts Check**: Deployment messages from gradual-rollouts channel around incident time
-    - **GitHub Correlation**: Recent PRs/deployments within 6 hours of incident
+    - **Deployment Activity Check**:
+      * Gradual rollouts channel messages around incident time
+      * Production channel deployment notifications around incident time
+    - **GitHub Correlation**: Recent PRs/deployments within 6 hours of incident with enhanced code analysis
     - **Feature Flag Analysis**: Relevant flags that might be related to the incident
-    - **Cross-Channel Timeline**: Timeline showing incident vs deployment activity
+    - **Cross-Channel Timeline**: Timeline showing incident vs deployment activity across all channels
     - **Root Cause Assessment**: Multi-source analysis of potential causes
 
-    Focus on correlating incidents with deployment activity across both Slack channels and GitHub."""),
+    Focus on correlating incidents with deployment activity across all deployment channels (gradual-rollouts + production) and GitHub."""),
 
     tools=[
         get_slack_messages,
         get_recent_github_merged_prs,
         get_recent_github_deployments,
         analyze_github_deployment_correlation,
-        check_feature_flag
+        check_launchdarkly_feature_flag
     ],
     markdown=True
 )
 
 def analyze_incidents_with_rollout_correlation():
-    """Analyze incidents from scan-officer and correlate with gradual-rollouts channel activity"""
+    """Analyze incidents from scan-officer and correlate with deployment channels activity"""
     print("🔍 Analyzing incidents with multi-channel deployment correlation...")
-    print("📊 Channels: GQS8W231C (scan-officer) + C02PKC70HEZ (gradual-rollouts)")
+    print("📊 Channels: GQS8W231C (scan-officer) + C02PKC70HEZ (gradual-rollouts) + CJP11G7UK (production)")
 
     response = incident_agent.print_response(f"""
     Perform comprehensive multi-channel incident analysis:
@@ -73,8 +77,10 @@ def analyze_incidents_with_rollout_correlation():
     - Extract incident time, affected service, and region for each incident found
 
     **STEP 2: Check Deployment Activity**
-    - For each incident, check C02PKC70HEZ (gradual-rollouts) channel for deployment messages around the incident timeframe (±2 hours) using the same date range (2025-09-15 to 2025-09-16)
-    - Look for rollout announcements, deployment notifications, or release messages
+    - For each incident, check deployment channels for messages around the incident timeframe (±2 hours) using the same date range (2025-09-15 to 2025-09-16):
+      * C02PKC70HEZ (gradual-rollouts) - for gradual rollout announcements and feature flag changes
+      * CJP11G7UK (production) - for production deployment notifications and release messages
+    - Look for rollout announcements, deployment notifications, production releases, or configuration changes
 
     **STEP 3: GitHub Correlation**
     - Run analyze_github_deployment_correlation() with incident parameters
@@ -88,11 +94,12 @@ def analyze_incidents_with_rollout_correlation():
     - Create timeline showing:
       * Incident occurrence time
       * Gradual rollouts channel activity (±2 hours)
+      * Production channel deployment activity (±2 hours)
       * GitHub deployment activity (±6 hours)
       * Feature flag status
-    - Identify correlations between deployment messages and incidents
+    - Identify correlations between deployment messages and incidents across all channels
 
-    Provide comprehensive analysis showing if incidents correlate with deployment activity from either Slack channels or GitHub.
+    Provide comprehensive analysis showing if incidents correlate with deployment activity from Slack channels (gradual-rollouts + production) or GitHub.
     """)
 
     return response
