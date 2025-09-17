@@ -83,12 +83,68 @@ Send a slack formatted message to the #alerts-testing-operations [C03P98HRUSG] S
     debug_mode=True,
     debug_level=3,
 )
-agent_sre_support.print_response("""
+def run_agent_sre_support(user_message=None):
+    """
+    Run the SRE support agent with either a custom message or the default behavior.
+    
+    Args:
+        user_message (str, optional): Custom message to process. If None, uses the default behavior.
+    
+    Returns:
+        str: The agent's response
+    """
+    if user_message:
+        print(f"Processing custom user message: {user_message}")
+        # Process custom user message
+        prompt = f"""
+        Today is 2025-09-17. A user has sent the following SPECIFIC message in the #sre-support channel:
+        
+        "{user_message}"
+        
+        IMPORTANT: Process ONLY this specific message. Do NOT review other messages or perform default behaviors.
+        
+        Please:
+        1. Determine if this is a **request or operational question**.
+        2. **Summarize** the request goal and details in plain language.
+        3. **Extract keywords** from the request, leveraging the Orca Technical Glossary and Product Domain Teams references.
+        4. **Search the OPR Confluence space** for relevant procedures, guides, feature flag docs, runbooks, or escalation contacts (up to 10 searches).
+        5. **Compose a response** that includes:
+           - A short **summary** of the request
+           - The **keywords** used
+           - **3 relevant Confluence pages** (most relevant first, with title + link)
+        6. Format the response for Slack but DO NOT send any messages to Slack channels.
+        
+        Process ONLY this specific user message and do not perform any additional tasks or reviews.
+        Return the formatted response without sending it anywhere.
+        """
+        agent_sre_support.print_response(prompt)
+    else:
+        # Default behavior - review past 3 days of messages
+        agent_sre_support.print_response("""
 Today is 2025-09-17. Review messages from the Slack channel C076NHGBK8E [#sre-support] from the past 3 days. 
 
 For each(!) message:
 1. Determine if it is a **request or operational question**. 
-   - Ignore system/administrative events (e.g., “X was added to the channel”).
+   - Ignore system/administrative events (e.g., "X was added to the channel").
+2. **Summarize** the request goal and details in plain language.
+3. **Extract keywords** from the request, leveraging the Orca Technical Glossary and Product Domain Teams references, as well The main OPR "SRE Help Center" confluence page
+4. **Search the OPR Confluence space** for relevant procedures, guides, feature flag docs, runbooks, or escalation contacts (up to 10 searches).
+5. **Compose a response** that includes:
+   - A short **summary** of the request
+   - The **keywords** used
+   - **3 relevant Confluence pages** (most relevant first [first outputs in your search], with title + link)
+6. Format the response for Slack but DO NOT send any messages to Slack channels. Return the formatted response only.
+""")
+
+# Keep the original behavior when running this file directly
+if __name__ == "__main__":
+    # Use print_response for console output when running directly
+    agent_sre_support.print_response("""
+Today is 2025-09-17. Review messages from the Slack channel C076NHGBK8E [#sre-support] from the past 3 days. 
+
+For each(!) message:
+1. Determine if it is a **request or operational question**. 
+   - Ignore system/administrative events (e.g., "X was added to the channel").
 2. **Summarize** the request goal and details in plain language.
 3. **Extract keywords** from the request, leveraging the Orca Technical Glossary and Product Domain Teams references, as well The main OPR "SRE Help Center" confluence page
 4. **Search the OPR Confluence space** for relevant procedures, guides, feature flag docs, runbooks, or escalation contacts (up to 10 searches).
