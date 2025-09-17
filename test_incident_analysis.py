@@ -18,8 +18,9 @@ def test_incident_correlation():
     init_github_client(os.getenv("GITHUB_TOKEN"), os.getenv("GITHUB_ORG"), os.getenv("GITHUB_REPO"))
     init_launchdarkly_client(os.getenv("LAUNCHDARKLY_SDK_KEY"))
 
-    # Simulate an incident that happened 2 hours ago
-    incident_time = "2025-09-16T21:00:00+00:00"  # 9 PM UTC
+    # Simulate an incident that happened 2 hours ago (using current date)
+    current_time = datetime.now(timezone.utc)
+    incident_time = current_time.replace(hour=21, minute=0, second=0, microsecond=0).isoformat()
     service = "orca-api"
     region = "us-east-1"
 

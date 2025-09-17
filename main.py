@@ -1,6 +1,7 @@
 import dotenv
 import os
 from textwrap import dedent
+from datetime import datetime
 
 from agno.agent import Agent
 from agno.models.aws.bedrock import AwsBedrock, Session
@@ -68,8 +69,8 @@ Send a slack formatted message to the #alerts-testing-operations [C03P98HRUSG] S
 
     tools=[get_slack_channels, get_slack_messages, get_slack_thread_replies,get_slack_user_info, get_slack_channel_info, fetch_slack_messages_with_threads, search_confluence_content, get_confluence_page_content, search_confluence_by_title ],
     markdown=True,
-    additional_context="""
-    Today is 2025-09-17.
+    additional_context=f"""
+    Today is {datetime.now().strftime("%Y-%m-%d")}.
     You are searching specifically within the SRE Operations (OPR) Confluence space at Orca Security.
     Focus on operational procedures, team contacts, and SRE-specific documentation.
     Here are some examples of request and it's doc:
@@ -83,8 +84,8 @@ Send a slack formatted message to the #alerts-testing-operations [C03P98HRUSG] S
     debug_mode=True,
     debug_level=3,
 )
-agent_sre_support.print_response("""
-Today is 2025-09-17. Review messages from the Slack channel C076NHGBK8E [#sre-support] from the past 3 days. 
+agent_sre_support.print_response(f"""
+Today is {datetime.now().strftime("%Y-%m-%d")}. Review messages from the Slack channel C076NHGBK8E [#sre-support] from the past 3 days. 
 
 For each(!) message:
 1. Determine if it is a **request or operational question**. 
@@ -209,8 +210,8 @@ Knowledge Sources - You can access and use the following knowledge bases:
     """),
     tools=[DuckDuckGoTools(), get_slack_channels, get_slack_messages, get_slack_thread_replies, get_slack_user_info, get_slack_channel_info, fetch_slack_messages_with_threads, search_confluence_content, get_confluence_page_content, search_confluence_by_title, get_all_launchdarkly_feature_flags, check_launchdarkly_feature_flag, enable_launchdarkly_maintenance_mode, get_launchdarkly_alert_thresholds, get_recent_github_merged_prs, get_recent_github_deployments, get_recent_github_commits, analyze_github_deployment_correlation ],
     markdown=True,
-    additional_context="""
-    Today is 2025-09-17.
+    additional_context=f"""
+    Today is {datetime.now().strftime("%Y-%m-%d")}.
     You are searching specifically within the SRE Operations (OPR) Confluence space at Orca Security.
     Focus on operational procedures, team contacts, and SRE-specific documentation.
     """,

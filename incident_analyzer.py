@@ -2,6 +2,7 @@
 
 import os
 from textwrap import dedent
+from datetime import datetime, timedelta
 
 import dotenv
 from agno.agent import Agent
@@ -67,17 +68,21 @@ def analyze_incidents_with_rollout_correlation():
     print("🔍 Analyzing incidents with multi-channel deployment correlation...")
     print("📊 Channels: GQS8W231C (scan-officer) + C02PKC70HEZ (gradual-rollouts) + CJP11G7UK (production)")
 
+    # Calculate dates dynamically
+    today = datetime.now().strftime("%Y-%m-%d")
+    yesterday = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
+
     response = incident_agent.print_response(f"""
     Perform comprehensive multi-channel incident analysis:
 
-    **IMPORTANT: Today is 2025-09-16. Use this date to calculate "last 24 hours" properly.**
+    **IMPORTANT: Today is {today}. Use this date to calculate "last 24 hours" properly.**
 
     **STEP 1: Find Incidents**
-    - Analyze GQS8W231C (scan-officer) channel for incident reports from the last 24 hours (2025-09-15 to 2025-09-16)
+    - Analyze GQS8W231C (scan-officer) channel for incident reports from the last 24 hours ({yesterday} to {today})
     - Extract incident time, affected service, and region for each incident found
 
     **STEP 2: Check Deployment Activity**
-    - For each incident, check deployment channels for messages around the incident timeframe (±2 hours) using the same date range (2025-09-15 to 2025-09-16):
+    - For each incident, check deployment channels for messages around the incident timeframe (±2 hours) using the same date range ({yesterday} to {today}):
       * C02PKC70HEZ (gradual-rollouts) - for gradual rollout announcements and feature flag changes
       * CJP11G7UK (production) - for production deployment notifications and release messages
     - Look for rollout announcements, deployment notifications, production releases, or configuration changes
