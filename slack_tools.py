@@ -221,7 +221,11 @@ def get_slack_messages(
     
     # Parse dates to timestamps
     oldest = str(dateparser.parse(start_date).replace(tzinfo=timezone.utc).timestamp())
-    latest = str(dateparser.parse(end_date).replace(tzinfo=timezone.utc).timestamp())
+
+    # For end_date, include the entire day by setting time to 23:59:59
+    end_datetime = dateparser.parse(end_date).replace(tzinfo=timezone.utc)
+    end_datetime = end_datetime.replace(hour=23, minute=59, second=59, microsecond=999999)
+    latest = str(end_datetime.timestamp())
     
     all_messages = []
     cursor = None

@@ -1,0 +1,1482 @@
+devenv2 us-east-1 us.anthropic.claude-sonnet-4-20250514-v1:0
+xxxx <slack_tools.SlackClient object at 0x106636f90>
+LaunchDarkly client initialized successfully
+GitHub client initialized successfully for user: rondavis-orca
+WARNING  Invalid debug level: 3. Setting to 1.                                  
+DEBUG ****** Agent ID: 86215735-1870-41ef-b811-51eabf807cf6 ******              
+DEBUG Creating new AgentSession: b65c468a-1c32-45e6-ae2c-005268bcb445           
+DEBUG Processing tools for model                                                
+DEBUG Added tool get_slack_channels                                             
+DEBUG Added tool get_slack_messages                                             
+DEBUG Added tool get_slack_thread_replies                                       
+DEBUG Added tool get_slack_user_info                                            
+DEBUG Added tool get_slack_channel_info                                         
+DEBUG Added tool fetch_slack_messages_with_threads                              
+DEBUG Added tool search_confluence_content                                      
+DEBUG Added tool get_confluence_page_content                                    
+DEBUG Added tool search_confluence_by_title                                     
+DEBUG ** Agent Run Start: eb81a643-1522-4435-ba0f-f9e9419bc639 ***              
+DEBUG ---------------- AwsBedrock Response Start -----------------              
+DEBUG ---- Model: us.anthropic.claude-sonnet-4-20250514-v1:0 -----              
+DEBUG ========================== system ==========================              
+DEBUG <instructions>                                                            
+      Role & Domain:                                                            
+          You are a highly trained SRE Operations Assistant specializing in Orca
+      Security’s operational workflows, analysis, and documentation lookup. Your
+      purpose is to support the SRE team by processing requests from the        
+      #sre-support Slack channel and providing clear, actionable responses      
+      backed by internal documentation.                                         
+          Knowledge Sources - You can access and use the following knowledge    
+      bases:                                                                    
+          - Orca Domains, Teams, responsibilities and ownerships, services -    
+      https://orcasecurity.atlassian.net/wiki/spaces/OPR/pages/4207509532/COPY+T
+      EST+-+Product+Domain+Teams+-+COPY+TEST                                    
+          - Orca Technical Glossary and Orca Terms [Definitions of Orca platform
+      and service terms] -                                                      
+      https://orcasecurity.atlassian.net/wiki/spaces/OPR/pages/3079274636/Orca+a
+      nd+Technical+Glossary                                                     
+          - SRE Operations Confluence Space (OPR) -                             
+      https://orcasecurity.atlassian.net/wiki/spaces/OPR                        
+              - Operational procedures and runbooksSRE Operations               
+              – Internal Help Centre (guides for handling requests)             
+              - Team contact information and escalation paths                   
+              - Approval workflows and operational processes                    
+              - Incident response & troubleshooting guides                      
+              - Feature flags and operational controls                          
+      Primary Responsibilities:                                                 
+      1. Receive & Analyze                                                      
+      - Detect and interpret user requests/questions from the #sre-support      
+      channel.                                                                  
+      - Ignore system/administrative messages (e.g., "X was added to the        
+      channel").                                                                
+      - Identify the request’s goal and key details.                            
+      2. Enrich & Contextualize                                                 
+      - Extract keywords (you can use the Orca Glossary and Team/Domain         
+      references).                                                              
+      - Expand the context where useful (e.g., related services, components,    
+      escalation paths).                                                        
+      Search Documentation:                                                     
+      - Query the OPR Confluence space for relevant runbooks, guides, feature   
+      flag docs, or escalation contacts.                                        
+      - Perform up to 10 searches per request, prioritizing precision and       
+      coverage.                                                                 
+      Respond with Guidance:                                                    
+      - Provide a concise summary of the request, make it short and to the      
+      point.                                                                    
+      - List the keywords used for the search.                                  
+      - Recommend up to 3 most relevant Confluence pages (ordered by actual     
+      content match, not just search rank).                                     
+      - Include a short justification for each recommended page.                
+      - Frame the response as clear, actionable guidance.                       
+      Output Destination:                                                       
+      Send a slack formatted message to the #alerts-testing-operations          
+      [C03P98HRUSG] Slack channel.                                              
+                                                                                
+      </instructions>                                                           
+                                                                                
+      <additional_information>                                                  
+      - Use markdown to format your answers.                                    
+      </additional_information>                                                 
+                                                                                
+                                                                                
+          Today is 2025-09-17.                                                  
+          You are searching specifically within the SRE Operations (OPR)        
+      Confluence space at Orca Security.                                        
+          Focus on operational procedures, team contacts, and SRE-specific      
+      documentation.                                                            
+          Here are some examples of request and it's doc:                       
+          - "skip by tag" / "vm tag skip" / whitelisted tags / blacklisted tags 
+      -                                                                         
+      https://orcasecurity.atlassian.net/wiki/spaces/OPR/pages/3278536757/SRE+Op
+      erations+Skip+by+Tag+Functionality                                        
+          - skip stopped vms -                                                  
+      https://orcasecurity.atlassian.net/wiki/spaces/OPR/pages/2990047269/SRE+Op
+      erations+Control+Stopped+VM+scanning                                      
+          - disable DP/dataplane scans/scanning -                               
+      https://orcasecurity.atlassian.net/wiki/spaces/OPR/pages/3143696385/SRE+Op
+      erations+Disable+Data+Plane+Scanning+CP+Only                              
+          - disable scans / enable scans -                                      
+      https://orcasecurity.atlassian.net/wiki/spaces/OPR/pages/2940994329/SRE+Op
+      erations+How+to+Block+Scans+At+the+Account+or+Organization+Level          
+          - enable NAT/static IP -                                              
+      https://orcasecurity.atlassian.net/wiki/spaces/OPR/pages/3098411009/SRE+Op
+      erations+Enabling+Static+IP+NAT+for+SubScanners                           
+          - The main OPR "SRE Help Center" confluence page, contains headlines  
+      that you can use for searches as well [compare words] -                   
+      https://orcasecurity.atlassian.net/wiki/spaces/OPR/pages/2936308076/---+SR
+      E+Operations+---+Internal+Help+Centre                                     
+DEBUG =========================== user ===========================              
+DEBUG                                                                           
+      Today is 2025-09-17. Review messages from the Slack channel C076NHGBK8E   
+      [#sre-support] from the past 3 days.                                      
+                                                                                
+      IMPORTANT: Use a high message limit (500) to ensure you get ALL recent    
+      messages, not just the first 100.                                         
+                                                                                
+      For each(!) message:                                                      
+      1. Determine if it is a **request or operational question**.              
+         - Ignore system/administrative events (e.g., “X was added to the       
+      channel”).                                                                
+      2. **Summarize** the request goal and details in plain language.          
+      3. **Extract keywords** from the request, leveraging the Orca Technical   
+      Glossary and Product Domain Teams references, as well The main OPR "SRE   
+      Help Center" confluence page                                              
+      4. **Search the OPR Confluence space** for relevant procedures, guides,   
+      feature flag docs, runbooks, or escalation contacts (up to 10 searches).  
+      5. **Compose a response** that includes:                                  
+         - A short **summary** of the request                                   
+         - The **keywords** used                                                
+         - **3 relevant Confluence pages** (most relevant first [first outputs  
+      in your search], with title + link)                                       
+      6. Send all as a slack formatted message, to C03P98HRUSG                  
+      [#alerts-testing-operations].                                             
+                                                                                
+DEBUG ======================== assistant =========================              
+DEBUG I'll help you review the messages from the #sre-support channel over the  
+      past 3 days and process any requests. Let me start by fetching the        
+      messages.                                                                 
+DEBUG Tool Calls:                                                               
+        - ID: 'tooluse_wtoFCKSvRc6kD15xDL1guQ'                                  
+          Name: 'fetch_slack_messages_with_threads'                             
+          Arguments: 'channel_id: C076NHGBK8E, start_date: 2025-09-14, end_date:
+      2025-09-17, include_thread_replies: True, resolve_mentions: True'         
+DEBUG ************************  METRICS  *************************              
+DEBUG * Tokens:                      input=2829, output=194, total=3023         
+DEBUG * Duration:                    3.3417s                                    
+DEBUG * Tokens per second:           58.0547 tokens/s                           
+DEBUG ************************  METRICS  *************************              
+DEBUG Running: fetch_slack_messages_with_threads(...)                           
+ERROR    Error in tool 'fetch_slack_messages_with_threads':                     
+         AttributeError("'SlackClient' object has no attribute 'get_messages'") 
+         Traceback (most recent call last):                                     
+           File                                                                 
+         "/Users/rondavis/src/orcathon-ai-sre/.venv/lib/python3.13/site-packages
+         /agno/tools/decorator.py", line 173, in sync_wrapper                   
+             return func(*args, **kwargs)                                       
+           File "/Users/rondavis/src/orcathon-ai-sre/slack_tools.py", line 359, 
+         in fetch_slack_messages_with_threads                                   
+             messages = client.get_messages(channel_id, start_date, end_date)   
+                        ^^^^^^^^^^^^^^^^^^^                                     
+         AttributeError: 'SlackClient' object has no attribute 'get_messages'   
+WARNING  Could not run function fetch_slack_messages_with_threads(...)          
+ERROR    'SlackClient' object has no attribute 'get_messages'                   
+         Traceback (most recent call last):                                     
+           File                                                                 
+         "/Users/rondavis/src/orcathon-ai-sre/.venv/lib/python3.13/site-packages
+         /agno/tools/function.py", line 728, in execute                         
+             result = self.function.entrypoint(**entrypoint_args,               
+         **self.arguments)  # type: ignore                                      
+           File                                                                 
+         "/Users/rondavis/src/orcathon-ai-sre/.venv/lib/python3.13/site-packages
+         /pydantic/_internal/_validate_call.py", line 39, in wrapper_function   
+             return wrapper(*args, **kwargs)                                    
+           File                                                                 
+         "/Users/rondavis/src/orcathon-ai-sre/.venv/lib/python3.13/site-packages
+         /pydantic/_internal/_validate_call.py", line 136, in __call__          
+             res =                                                              
+         self.__pydantic_validator__.validate_python(pydantic_core.ArgsKwargs(ar
+         gs, kwargs))                                                           
+           File                                                                 
+         "/Users/rondavis/src/orcathon-ai-sre/.venv/lib/python3.13/site-packages
+         /agno/tools/decorator.py", line 173, in sync_wrapper                   
+             return func(*args, **kwargs)                                       
+           File "/Users/rondavis/src/orcathon-ai-sre/slack_tools.py", line 359, 
+         in fetch_slack_messages_with_threads                                   
+             messages = client.get_messages(channel_id, start_date, end_date)   
+                        ^^^^^^^^^^^^^^^^^^^                                     
+         AttributeError: 'SlackClient' object has no attribute 'get_messages'   
+DEBUG =========================== tool ===========================              
+DEBUG Tool call Id: tooluse_wtoFCKSvRc6kD15xDL1guQ                              
+DEBUG 'SlackClient' object has no attribute 'get_messages'                      
+DEBUG **********************  TOOL METRICS  **********************              
+DEBUG * Duration:                    0.0089s                                    
+DEBUG **********************  TOOL METRICS  **********************              
+DEBUG ======================== assistant =========================              
+DEBUG Let me try using the direct message fetching function instead:            
+DEBUG Tool Calls:                                                               
+        - ID: 'tooluse_g8O-tIAHSJqks1TeFIqokg'                                  
+          Name: 'get_slack_messages'                                            
+          Arguments: 'channel_id: C076NHGBK8E, start_date: 2025-09-14, end_date:
+      2025-09-17, limit: 500'                                                   
+DEBUG ************************  METRICS  *************************              
+DEBUG * Tokens:                      input=3017, output=143, total=3160         
+DEBUG * Duration:                    2.1705s                                    
+DEBUG * Tokens per second:           65.8845 tokens/s                           
+DEBUG ************************  METRICS  *************************              
+DEBUG Running: get_slack_messages(...)                                          
+xxxx ('C076NHGBK8E', '2025-09-14', '2025-09-17', 500)
+DEBUG =========================== tool ===========================              
+DEBUG Tool call Id: tooluse_g8O-tIAHSJqks1TeFIqokg                              
+DEBUG [{'subtype': 'bot_message', 'text': '<!subteam^S06EVJNSPK5> new service   
+      request:\n----------------------------------------------\n`From:`         
+      <@U01U927928J>\n`Env:` Production-us\n`Org:` royalcaribbean\n`Account(s):`
+      All\n`Severity:` :large_blue_circle: Low\n`Org Delete?` This is not a     
+      delete organization request\n`Details:`\nCan we please increase the limit 
+      for both the boot and data volumes to 2TB?\nUUID for Royal                
+      Caribbean:\n187c7ea8-846e-413b-b803-469ab60d3353\n`Extra data / logs /    
+      links:`\n', 'username': 'SRE - Service request', 'type': 'message', 'ts': 
+      '1758143512.000099', 'bot_id': 'B079CS1TC3F', 'app_id': 'A079158CF9V',    
+      'trigger_id': 'Ft07A4FKFFU0', 'workflow_id': 'Wf079CQJASP7', 'thread_ts': 
+      '1758143512.000099', 'reply_count': 3, 'reply_users_count': 2,            
+      'latest_reply': '1758143544.572429', 'reply_users': ['B079CS1TC3F',       
+      'U01U927928J'], 'is_locked': False, 'subscribed': False, 'blocks':        
+      [{'type': 'rich_text', 'block_id': 'sdNqx', 'elements': [{'type':         
+      'rich_text_section', 'elements': [{'type': 'usergroup', 'usergroup_id':   
+      'S06EVJNSPK5'}, {'type': 'text', 'text': ' new service                    
+      request:\n----------------------------------------------\n'}, {'type':    
+      'text', 'text': 'From:', 'style': {'code': True}}, {'type': 'text',       
+      'text': ' '}, {'type': 'user', 'user_id': 'U01U927928J'}, {'type': 'text',
+      'text': '\n'}, {'type': 'text', 'text': 'Env:', 'style': {'code': True}}, 
+      {'type': 'text', 'text': ' '}, {'type': 'text', 'text': 'Production-us'}, 
+      {'type': 'text', 'text': '\n'}, {'type': 'text', 'text': 'Org:', 'style': 
+      {'code': True}}, {'type': 'text', 'text': ' '}, {'type': 'text', 'text':  
+      'royalcaribbean'}, {'type': 'text', 'text': '\n'}, {'type': 'text',       
+      'text': 'Account(s):', 'style': {'code': True}}, {'type': 'text', 'text': 
+      ' '}, {'type': 'text', 'text': 'All'}, {'type': 'text', 'text': '\n'},    
+      {'type': 'text', 'text': 'Severity:', 'style': {'code': True}}, {'type':  
+      'text', 'text': ' '}, {'type': 'emoji', 'name': 'large_blue_circle',      
+      'unicode': '1f535'}, {'type': 'text', 'text': ' Low'}, {'type': 'text',   
+      'text': '\n'}, {'type': 'text', 'text': 'Org Delete?', 'style': {'code':  
+      True}}, {'type': 'text', 'text': ' '}, {'type': 'text', 'text': 'This is  
+      not a delete organization request'}, {'type': 'text', 'text': '\n'},      
+      {'type': 'text', 'text': 'Details:', 'style': {'code': True}}, {'type':   
+      'text', 'text': '\n'}, {'type': 'text', 'text': 'Can we please increase   
+      the limit for both the boot and data volumes to 2TB?\nUUID for Royal      
+      Caribbean:\n187c7ea8-846e-413b-b803-469ab60d3353'}, {'type': 'text',      
+      'text': '\n'}, {'type': 'text', 'text': 'Extra data / logs / links:',     
+      'style': {'code': True}}, {'type': 'text', 'text': '\n'}]}]}],            
+      'channel_name': 'sre-support', 'url':                                     
+      'https://slack.com/archives/C076NHGBK8E/p1758143512000099'}, {'subtype':  
+      'bot_message', 'text': '<!subteam^S06EVJNSPK5> new service                
+      request:\n----------------------------------------------\n`From:`         
+      <@U040PKQ7LKC>\n`Env:` Production-in\n`Org:` tata digital\n`Account(s):`  
+      Azure - 723b90824131-6f73e73b5c3c\n`Severity:` :large_yellow_circle:      
+      Med\n`Org Delete?` This is not a delete organization                      
+      request\n`Details:`\nFor asset ltdsocprsoc02 can we please increase scan  
+      disk size limit &gt; 1TB if this is the failure reason.\n\nScan           
+      logs:\n<https://app.in.orcasecurity.io/monitor/e78848cd-80ed-4705-93ac-28c
+      c054c0eda/>\n\nIt’s important that we demonstrate a successful data-plane 
+      scan of this asset, as the customer is benchmarking our results against   
+      another tool.\n`Extra data / logs /                                       
+      links:`\n/subscriptions/afea1b0e-8612-4854-863d-6f73e73b5c3c/resourcegroup
+      s/rgp-tdsoc-pr-soc-01/providers/microsoft.compute/disks/ltdsocprsoc02_osdi
+      sk_1_a1b8f262f76646169d162e1376886142: 1.00TB', 'username': 'SRE - Service
+      request', 'type': 'message', 'ts': '1758111616.081169', 'bot_id':         
+      'B079CS1TC3F', 'app_id': 'A079158CF9V', 'trigger_id': 'Ft07A4FKFFU0',     
+      'workflow_id': 'Wf079CQJASP7', 'thread_ts': '1758111616.081169',          
+      'reply_count': 4, 'reply_users_count': 4, 'latest_reply':                 
+      '1758142617.814969', 'reply_users': ['B079CS1TC3F', 'U089ADX4B1R',        
+      'U020X150EAK', 'U040PKQ7LKC'], 'is_locked': False, 'subscribed': False,   
+      'blocks': [{'type': 'rich_text', 'block_id': 'dLeRY', 'elements':         
+      [{'type': 'rich_text_section', 'elements': [{'type': 'usergroup',         
+      'usergroup_id': 'S06EVJNSPK5'}, {'type': 'text', 'text': ' new service    
+      request:\n----------------------------------------------\n'}, {'type':    
+      'text', 'text': 'From:', 'style': {'code': True}}, {'type': 'text',       
+      'text': ' '}, {'type': 'user', 'user_id': 'U040PKQ7LKC'}, {'type': 'text',
+      'text': '\n'}, {'type': 'text', 'text': 'Env:', 'style': {'code': True}}, 
+      {'type': 'text', 'text': ' '}, {'type': 'text', 'text': 'Production-in'}, 
+      {'type': 'text', 'text': '\n'}, {'type': 'text', 'text': 'Org:', 'style': 
+      {'code': True}}, {'type': 'text', 'text': ' '}, {'type': 'text', 'text':  
+      'tata digital'}, {'type': 'text', 'text': '\n'}, {'type': 'text', 'text': 
+      'Account(s):', 'style': {'code': True}}, {'type': 'text', 'text': ' '},   
+      {'type': 'text', 'text': 'Azure - 723b90824131-6f73e73b5c3c'}, {'type':   
+      'text', 'text': '\n'}, {'type': 'text', 'text': 'Severity:', 'style':     
+      {'code': True}}, {'type': 'text', 'text': ' '}, {'type': 'emoji', 'name': 
+      'large_yellow_circle', 'unicode': '1f7e1'}, {'type': 'text', 'text': '    
+      Med'}, {'type': 'text', 'text': '\n'}, {'type': 'text', 'text': 'Org      
+      Delete?', 'style': {'code': True}}, {'type': 'text', 'text': ' '},        
+      {'type': 'text', 'text': 'This is not a delete organization request'},    
+      {'type': 'text', 'text': '\n'}, {'type': 'text', 'text': 'Details:',      
+      'style': {'code': True}}, {'type': 'text', 'text': '\n'}, {'type': 'text',
+      'text': 'For asset ltdsocprsoc02 can we please increase scan disk size    
+      limit > 1TB if this is the failure reason.\n\nScan logs:\n'}, {'type':    
+      'link', 'url':                                                            
+      'https://app.in.orcasecurity.io/monitor/e78848cd-80ed-4705-93ac-28cc054c0e
+      da/'}, {'type': 'text', 'text': '\n\nIt’s important that we demonstrate a 
+      successful data-plane scan of this asset, as the customer is benchmarking 
+      our results against another tool.'}, {'type': 'text', 'text': '\n'},      
+      {'type': 'text', 'text': 'Extra data / logs / links:', 'style': {'code':  
+      True}}, {'type': 'text', 'text': '\n'}, {'type': 'text', 'text':          
+      '/subscriptions/afea1b0e-8612-4854-863d-6f73e73b5c3c/resourcegroups/rgp-td
+      soc-pr-soc-01/providers/microsoft.compute/disks/ltdsocprsoc02_osdisk_1_a1b
+      8f262f76646169d162e1376886142: 1.00TB'}]}]}], 'channel_name':             
+      'sre-support', 'url':                                                     
+      'https://slack.com/archives/C076NHGBK8E/p1758111616081169'}, {'subtype':  
+      'bot_message', 'text': '<!subteam^S06EVJNSPK5> new service                
+      request:\n----------------------------------------------\n`From:`         
+      <@U02EHPYGM4Z>\n`Env:` US Restricted (FedRAMP, TCloud, TCNA)\n`Org:` this 
+      is not a real org\n`Account(s):` this is not a real account\n`Severity:`  
+      :large_yellow_circle: Med\n`Org Delete?` This is not a delete organization
+      request\n`Details:`\nthis is a request to help me with configuring stopped
+      VMs\n`Extra data / logs / links:`\n', 'username': 'SRE - Service request',
+      'type': 'message', 'ts': '1758102810.623009', 'bot_id': 'B079CS1TC3F',    
+      'app_id': 'A079158CF9V', 'trigger_id': 'Ft07A4FKFFU0', 'workflow_id':     
+      'Wf079CQJASP7', 'thread_ts': '1758102810.623009', 'reply_count': 6,       
+      'reply_users_count': 3, 'latest_reply': '1758108754.353939',              
+      'reply_users': ['B079CS1TC3F', 'U02EHPYGM4Z', 'B07UCMK78F6'], 'is_locked':
+      False, 'subscribed': False, 'blocks': [{'type': 'rich_text', 'block_id':  
+      'xPWWn', 'elements': [{'type': 'rich_text_section', 'elements': [{'type': 
+      'usergroup', 'usergroup_id': 'S06EVJNSPK5'}, {'type': 'text', 'text': '   
+      new service request:\n----------------------------------------------\n'}, 
+      {'type': 'text', 'text': 'From:', 'style': {'code': True}}, {'type':      
+      'text', 'text': ' '}, {'type': 'user', 'user_id': 'U02EHPYGM4Z'}, {'type':
+      'text', 'text': '\n'}, {'type': 'text', 'text': 'Env:', 'style': {'code': 
+      True}}, {'type': 'text', 'text': ' '}, {'type': 'text', 'text': 'US       
+      Restricted (FedRAMP, TCloud, TCNA)'}, {'type': 'text', 'text': '\n'},     
+      {'type': 'text', 'text': 'Org:', 'style': {'code': True}}, {'type':       
+      'text', 'text': ' '}, {'type': 'text', 'text': 'this is not a real org'}, 
+      {'type': 'text', 'text': '\n'}, {'type': 'text', 'text': 'Account(s):',   
+      'style': {'code': True}}, {'type': 'text', 'text': ' '}, {'type': 'text', 
+      'text': 'this is not a real account'}, {'type': 'text', 'text': '\n'},    
+      {'type': 'text', 'text': 'Severity:', 'style': {'code': True}}, {'type':  
+      'text', 'text': ' '}, {'type': 'emoji', 'name': 'large_yellow_circle',    
+      'unicode': '1f7e1'}, {'type': 'text', 'text': ' Med'}, {'type': 'text',   
+      'text': '\n'}, {'type': 'text', 'text': 'Org Delete?', 'style': {'code':  
+      True}}, {'type': 'text', 'text': ' '}, {'type': 'text', 'text': 'This is  
+      not a delete organization request'}, {'type': 'text', 'text': '\n'},      
+      {'type': 'text', 'text': 'Details:', 'style': {'code': True}}, {'type':   
+      'text', 'text': '\n'}, {'type': 'text', 'text': 'this is a request to help
+      me with configuring stopped VMs'}, {'type': 'text', 'text': '\n'},        
+      {'type': 'text', 'text': 'Extra data / logs / links:', 'style': {'code':  
+      True}}, {'type': 'text', 'text': '\n'}]}]}], 'reactions': [{'name':       
+      'todo-done', 'users': ['U02EHPYGM4Z'], 'count': 1}], 'channel_name':      
+      'sre-support', 'url':                                                     
+      'https://slack.com/archives/C076NHGBK8E/p1758102810623009'}, {'subtype':  
+      'bot_message', 'text': '<!subteam^S06EVJNSPK5> new service                
+      request:\n----------------------------------------------\n`From:`         
+      <@U076M27MWJV>\n`Env:` Production-eu\n`Org:` Bourne Leisure\n`Account(s):`
+      Bourne Leisure LTD\n`Severity:` :large_blue_circle: Low\n`Org Delete?`    
+      This is not a delete organization request\n`Details:`\nThe Bourne Leisure 
+      tenant has the wrong domain name associated. It is currently              
+      <http://bournecareers.co.uk|bournecareers.co.uk> \n\nThe correct domain   
+      is: <http://bourne-leisure.co.uk|bourne-leisure.co.uk>\n\nCan you help    
+      correct it?\n`Extra data / logs / links:`\n', 'username': 'SRE - Service  
+      request', 'type': 'message', 'ts': '1758095936.132839', 'bot_id':         
+      'B079CS1TC3F', 'app_id': 'A079158CF9V', 'trigger_id': 'Ft07A4FKFFU0',     
+      'workflow_id': 'Wf079CQJASP7', 'thread_ts': '1758095936.132839',          
+      'reply_count': 9, 'reply_users_count': 5, 'latest_reply':                 
+      '1758107235.135629', 'reply_users': ['B079CS1TC3F', 'U02EHPYGM4Z',        
+      'U020X150EAK', 'U076M27MWJV', 'B07UCMK78F6'], 'is_locked': False,         
+      'subscribed': False, 'blocks': [{'type': 'rich_text', 'block_id': 'aIUur',
+      'elements': [{'type': 'rich_text_section', 'elements': [{'type':          
+      'usergroup', 'usergroup_id': 'S06EVJNSPK5'}, {'type': 'text', 'text': '   
+      new service request:\n----------------------------------------------\n'}, 
+      {'type': 'text', 'text': 'From:', 'style': {'code': True}}, {'type':      
+      'text', 'text': ' '}, {'type': 'user', 'user_id': 'U076M27MWJV'}, {'type':
+      'text', 'text': '\n'}, {'type': 'text', 'text': 'Env:', 'style': {'code': 
+      True}}, {'type': 'text', 'text': ' '}, {'type': 'text', 'text':           
+      'Production-eu'}, {'type': 'text', 'text': '\n'}, {'type': 'text', 'text':
+      'Org:', 'style': {'code': True}}, {'type': 'text', 'text': ' '}, {'type': 
+      'text', 'text': 'Bourne Leisure'}, {'type': 'text', 'text': '\n'},        
+      {'type': 'text', 'text': 'Account(s):', 'style': {'code': True}}, {'type':
+      'text', 'text': ' '}, {'type': 'text', 'text': 'Bourne Leisure LTD'},     
+      {'type': 'text', 'text': '\n'}, {'type': 'text', 'text': 'Severity:',     
+      'style': {'code': True}}, {'type': 'text', 'text': ' '}, {'type': 'emoji',
+      'name': 'large_blue_circle', 'unicode': '1f535'}, {'type': 'text', 'text':
+      ' Low'}, {'type': 'text', 'text': '\n'}, {'type': 'text', 'text': 'Org    
+      Delete?', 'style': {'code': True}}, {'type': 'text', 'text': ' '},        
+      {'type': 'text', 'text': 'This is not a delete organization request'},    
+      {'type': 'text', 'text': '\n'}, {'type': 'text', 'text': 'Details:',      
+      'style': {'code': True}}, {'type': 'text', 'text': '\n'}, {'type': 'text',
+      'text': 'The Bourne Leisure tenant has the wrong domain name associated.  
+      It is currently bournecareers.co.uk \n\nThe correct domain is:            
+      bourne-leisure.co.uk\n\nCan you help correct it?'}, {'type': 'text',      
+      'text': '\n'}, {'type': 'text', 'text': 'Extra data / logs / links:',     
+      'style': {'code': True}}, {'type': 'text', 'text': '\n'}]}]}],            
+      'reactions': [{'name': 'todo-done', 'users': ['U02EHPYGM4Z'], 'count':    
+      1}], 'channel_name': 'sre-support', 'url':                                
+      'https://slack.com/archives/C076NHGBK8E/p1758095936132839'}, {'subtype':  
+      'bot_message', 'text': '<!subteam^S06EVJNSPK5> new service                
+      request:\n----------------------------------------------\n`From:`         
+      <@U07EL9Y2LK1>\n`Env:` Production-au\n`Org:` lululemon                    
+      Shanghai\n`Account(s):` \n`Severity:` :large_yellow_circle: Med\n`Org     
+      Delete?` This is not a delete organization request\n`Details:`\nScan the  
+      VM with following tags:\n\nenvironment:dev\nenvironment:dev-poc           
+      \nenvironment:devqastg  \nenvironment:npd  \nenvironment:poc              
+      \nenvironment:qa \nenvironment:staging\nenvironment:stg\n`Extra data /    
+      logs / links:`\n', 'username': 'SRE - Service request', 'type': 'message',
+      'ts': '1758082111.679759', 'bot_id': 'B079CS1TC3F', 'app_id':             
+      'A079158CF9V', 'trigger_id': 'Ft07A4FKFFU0', 'workflow_id':               
+      'Wf079CQJASP7', 'thread_ts': '1758082111.679759', 'reply_count': 5,       
+      'reply_users_count': 4, 'latest_reply': '1758085120.180859',              
+      'reply_users': ['B079CS1TC3F', 'U02EHPYGM4Z', 'U07EL9Y2LK1',              
+      'B07UCMK78F6'], 'is_locked': False, 'subscribed': False, 'blocks':        
+      [{'type': 'rich_text', 'block_id': '1v9bn', 'elements': [{'type':         
+      'rich_text_section', 'elements': [{'type': 'usergroup', 'usergroup_id':   
+      'S06EVJNSPK5'}, {'type': 'text', 'text': ' new service                    
+      request:\n----------------------------------------------\n'}, {'type':    
+      'text', 'text': 'From:', 'style': {'code': True}}, {'type': 'text',       
+      'text': ' '}, {'type': 'user', 'user_id': 'U07EL9Y2LK1'}, {'type': 'text',
+      'text': '\n'}, {'type': 'text', 'text': 'Env:', 'style': {'code': True}}, 
+      {'type': 'text', 'text': ' '}, {'type': 'text', 'text': 'Production-au'}, 
+      {'type': 'text', 'text': '\n'}, {'type': 'text', 'text': 'Org:', 'style': 
+      {'code': True}}, {'type': 'text', 'text': ' '}, {'type': 'text', 'text':  
+      'lululemon Shanghai'}, {'type': 'text', 'text': '\n'}, {'type': 'text',   
+      'text': 'Account(s):', 'style': {'code': True}}, {'type': 'text', 'text': 
+      ' '}, {'type': 'text', 'text': '\n'}, {'type': 'text', 'text':            
+      'Severity:', 'style': {'code': True}}, {'type': 'text', 'text': ' '},     
+      {'type': 'emoji', 'name': 'large_yellow_circle', 'unicode': '1f7e1'},     
+      {'type': 'text', 'text': ' Med'}, {'type': 'text', 'text': '\n'}, {'type':
+      'text', 'text': 'Org Delete?', 'style': {'code': True}}, {'type': 'text', 
+      'text': ' '}, {'type': 'text', 'text': 'This is not a delete organization 
+      request'}, {'type': 'text', 'text': '\n'}, {'type': 'text', 'text':       
+      'Details:', 'style': {'code': True}}, {'type': 'text', 'text': '\n'},     
+      {'type': 'text', 'text': 'Scan the VM with following                      
+      tags:\n\nenvironment:dev\nenvironment:dev-poc  \nenvironment:devqastg     
+      \nenvironment:npd  \nenvironment:poc  \nenvironment:qa                    
+      \nenvironment:staging\nenvironment:stg'}, {'type': 'text', 'text': '\n'}, 
+      {'type': 'text', 'text': 'Extra data / logs / links:', 'style': {'code':  
+      True}}, {'type': 'text', 'text': '\n'}]}]}], 'reactions': [{'name':       
+      'todo-done', 'users': ['U02EHPYGM4Z'], 'count': 1}], 'channel_name':      
+      'sre-support', 'url':                                                     
+      'https://slack.com/archives/C076NHGBK8E/p1758082111679759'}, {'subtype':  
+      'bot_message', 'text': '<!subteam^S06EVJNSPK5> new service                
+      request:\n----------------------------------------------\n`From:`         
+      <@U03NDKTPFC7>\n`Env:` Production-sap\n`Org:` SAP\n`Account(s):`          
+      sap-az-oaas-ca20-live1 &amp; sap-az-oaas-br20-live1\n`Severity:`          
+      :large_orange_circle: High\n`Org Delete?` This is not a delete            
+      organization request\n`Details:`\nSAP had account scanning disabled on 2  
+      Azure Subscriptions as a part of an ongoing rate-limit investigation (link
+      below). Rate limits have been adjusted. Please re-enable scanning of the  
+      below 2 subscriptions.\n\nsap-az-oaas-ca20-live1                          
+      (323bbb79-90f2-4df8-9cc6-b0e3d0be88c6)\nsap-az-oaas-br20-live1            
+      (1af18491-ad43-458f-b280-7fc4fa8f78c5)\n`Extra data / logs /              
+      links:`\n<https://orcasecurity.slack.com/archives/C02Q1H2JWJY/p17562221040
+      37709>', 'username': 'SRE - Service request', 'attachments': [{'from_url':
+      'https://orcasecurity.slack.com/archives/C02Q1H2JWJY/p1756222104037709',  
+      'ts': '1756222104.037709', 'author_id': 'U08C3LW3KFV', 'channel_id':      
+      'C02Q1H2JWJY', 'channel_team': 'TEHG4JU2C', 'is_msg_unfurl': True,        
+      'is_thread_root_unfurl': True, 'id': 1, 'original_url':                   
+      'https://orcasecurity.slack.com/archives/C02Q1H2JWJY/p1756222104037709',  
+      'fallback': "[August 26th, 2025 8:28 AM] bug_reporter: :priority-high:    
+      High   <https://orcasecurity.atlassian.net/browse/CVS-2122|CVS-2122>      
+      <!subteam^S08P9CNGCH2> *Reporter*: <@U03NDKTPFC7>\n*Organization*: SAP    
+      (_SAP_)\n\n*Summary*: Azure's rate limit is being hit due to Orca, need   
+      RCA and advice for next steps SAP has informed me of a critical priority  
+      issue right now. They are reaching Azure's rate limit, which is causing   
+      the Object-Store Service pipeline deployment to fail. This may lead to a  
+      service outage if not addressed promptly.\n\nCloud Accounts:\n•           
+      sap-az-oaas-br20-live1 (1af18491-ad43-458f-b280-7fc4fa8f78c5)\n    ◦ Newly
+      reported today\n• sap-az-oaas-ca20-live1                                  
+      (323bbb79-90f2-4df8-9cc6-b0e3d0be88c6)\n    ◦ Reported last week, since   
+      then SRE has stopped scans\nRequested actions:\n• Please provide a root   
+      cause analysis of what is causing this, and provide a recommendation for  
+      next steps towards a solution.\nDetails:\n• One of the SAP landscapes is  
+      getting highly affected due to Azure Rate limiting issues. Majority of the
+      quota is being used up by Orca. As such, they are currently facing an     
+      outage for Object Store Service due Azure rate limiting. *Investigation   
+      steps* Initial internal report last week for 1 account -                  
+      <https://orcasecurity.slack.com/archives/C02QHQQGBPS/p1755613790162859>\nS
+      RE request last week to stop scanning on 1 account -                      
+      <https://orcasecurity.slack.com/archives/C076NHGBK8E/p1755712604265769>,  
+      with interactive elements", 'text': ":priority-high: High                 
+      <https://orcasecurity.atlassian.net/browse/CVS-2122|CVS-2122>             
+      <!subteam^S08P9CNGCH2>\n*Reporter*: <@U03NDKTPFC7>\n*Organization*: SAP   
+      (_SAP_)\n\n*Summary*: Azure's rate limit is being hit due to Orca, need   
+      RCA and advice for next steps\nSAP has informed me of a critical priority 
+      issue right now. They are reaching Azure's rate limit, which is causing   
+      the Object-Store Service pipeline deployment to fail. This may lead to a  
+      service outage if not addressed promptly.\n\nCloud Accounts:\n•           
+      sap-az-oaas-br20-live1 (1af18491-ad43-458f-b280-7fc4fa8f78c5)\n    ◦ Newly
+      reported today\n• sap-az-oaas-ca20-live1                                  
+      (323bbb79-90f2-4df8-9cc6-b0e3d0be88c6)\n    ◦ Reported last week, since   
+      then SRE has stopped scans\nRequested actions:\n• Please provide a root   
+      cause analysis of what is causing this, and provide a recommendation for  
+      next steps towards a solution.\nDetails:\n• One of the SAP landscapes is  
+      getting highly affected due to Azure Rate limiting issues. Majority of the
+      quota is being used up by Orca. As such, they are currently facing an     
+      outage for Object Store Service due Azure rate limiting.\n*Investigation  
+      steps*\nInitial internal report last week for 1 account -                 
+      <https://orcasecurity.slack.com/archives/C02QHQQGBPS/p1755613790162859>\nS
+      RE request last week to stop scanning on 1 account -                      
+      <https://orcasecurity.slack.com/archives/C076NHGBK8E/p1755712604265769>\n\
+      n<https://orcasecurity.slack.com/archives/C02Q1H2JWJY/p1756222104037709|Vi
+      ew original message>", 'author_name': 'Bug Reporter', 'author_link':      
+      'https://orcasecurity.slack.com/services/B08BP7Q90KH', 'author_icon':     
+      'https://avatars.slack-edge.com/2025-09-11/9505409462836_d99d0a39e4dfae657
+      7a2_48.png', 'author_subname': 'bug_reporter', 'mrkdwn_in': ['text'],     
+      'footer': 'Thread in Slack Conversation'}], 'type': 'message', 'ts':      
+      '1758033913.073299', 'edited': {'user': 'B079CS1TC3F', 'ts':              
+      '1758033914.000000'}, 'bot_id': 'B079CS1TC3F', 'app_id': 'A079158CF9V',   
+      'trigger_id': 'Ft07A4FKFFU0', 'workflow_id': 'Wf079CQJASP7', 'thread_ts': 
+      '1758033913.073299', 'reply_count': 3, 'reply_users_count': 3,            
+      'latest_reply': '1758036548.754089', 'reply_users': ['B079CS1TC3F',       
+      'B07UCMK78F6', 'U02EHPYGM4Z'], 'is_locked': False, 'subscribed': False,   
+      'blocks': [{'type': 'rich_text', 'block_id': 'AxnJu', 'elements':         
+      [{'type': 'rich_text_section', 'elements': [{'type': 'usergroup',         
+      'usergroup_id': 'S06EVJNSPK5'}, {'type': 'text', 'text': ' new service    
+      request:\n----------------------------------------------\n'}, {'type':    
+      'text', 'text': 'From:', 'style': {'code': True}}, {'type': 'text',       
+      'text': ' '}, {'type': 'user', 'user_id': 'U03NDKTPFC7'}, {'type': 'text',
+      'text': '\n'}, {'type': 'text', 'text': 'Env:', 'style': {'code': True}}, 
+      {'type': 'text', 'text': ' '}, {'type': 'text', 'text': 'Production-sap'},
+      {'type': 'text', 'text': '\n'}, {'type': 'text', 'text': 'Org:', 'style': 
+      {'code': True}}, {'type': 'text', 'text': ' '}, {'type': 'text', 'text':  
+      'SAP'}, {'type': 'text', 'text': '\n'}, {'type': 'text', 'text':          
+      'Account(s):', 'style': {'code': True}}, {'type': 'text', 'text': ' '},   
+      {'type': 'text', 'text': 'sap-az-oaas-ca20-live1 &                        
+      sap-az-oaas-br20-live1'}, {'type': 'text', 'text': '\n'}, {'type': 'text',
+      'text': 'Severity:', 'style': {'code': True}}, {'type': 'text', 'text': ' 
+      '}, {'type': 'emoji', 'name': 'large_orange_circle', 'unicode': '1f7e0'}, 
+      {'type': 'text', 'text': ' High'}, {'type': 'text', 'text': '\n'},        
+      {'type': 'text', 'text': 'Org Delete?', 'style': {'code': True}}, {'type':
+      'text', 'text': ' '}, {'type': 'text', 'text': 'This is not a delete      
+      organization request'}, {'type': 'text', 'text': '\n'}, {'type': 'text',  
+      'text': 'Details:', 'style': {'code': True}}, {'type': 'text', 'text':    
+      '\n'}, {'type': 'text', 'text': 'SAP had account scanning disabled on 2   
+      Azure Subscriptions as a part of an ongoing rate-limit investigation (link
+      below). Rate limits have been adjusted. Please re-enable scanning of the  
+      below 2 subscriptions.\n\nsap-az-oaas-ca20-live1                          
+      (323bbb79-90f2-4df8-9cc6-b0e3d0be88c6)\nsap-az-oaas-br20-live1            
+      (1af18491-ad43-458f-b280-7fc4fa8f78c5)'}, {'type': 'text', 'text': '\n'}, 
+      {'type': 'text', 'text': 'Extra data / logs / links:', 'style': {'code':  
+      True}}, {'type': 'text', 'text': '\n'}, {'type': 'link', 'url':           
+      'https://orcasecurity.slack.com/archives/C02Q1H2JWJY/p1756222104037709'}]}
+      ]}], 'reactions': [{'name': 'todo-done', 'users': ['U02EHPYGM4Z'],        
+      'count': 1}], 'channel_name': 'sre-support', 'url':                       
+      'https://slack.com/archives/C076NHGBK8E/p1758033913073299'}, {'subtype':  
+      'bot_message', 'text': '<!subteam^S06EVJNSPK5> new service                
+      request:\n----------------------------------------------\n`From:`         
+      <@U089ADX4B1R>\n`Env:` Production-us\n`Org:` omarorg\n`Account(s):`       
+      omartest\n`Severity:` :large_blue_circle: Low\n`Org Delete?` This is not a
+      delete organization request\n`Details:`\ni want to exclude stopped        
+      vms\n`Extra data / logs / links:`\n', 'username': 'SRE - Service request',
+      'type': 'message', 'ts': '1758025667.259219', 'bot_id': 'B079CS1TC3F',    
+      'app_id': 'A079158CF9V', 'trigger_id': 'Ft07A4FKFFU0', 'workflow_id':     
+      'Wf079CQJASP7', 'thread_ts': '1758025667.259219', 'reply_count': 4,       
+      'reply_users_count': 3, 'latest_reply': '1758107240.376519',              
+      'reply_users': ['B079CS1TC3F', 'U02EHPYGM4Z', 'B07UCMK78F6'], 'is_locked':
+      False, 'subscribed': False, 'blocks': [{'type': 'rich_text', 'block_id':  
+      'GoTAz', 'elements': [{'type': 'rich_text_section', 'elements': [{'type': 
+      'usergroup', 'usergroup_id': 'S06EVJNSPK5'}, {'type': 'text', 'text': '   
+      new service request:\n----------------------------------------------\n'}, 
+      {'type': 'text', 'text': 'From:', 'style': {'code': True}}, {'type':      
+      'text', 'text': ' '}, {'type': 'user', 'user_id': 'U089ADX4B1R'}, {'type':
+      'text', 'text': '\n'}, {'type': 'text', 'text': 'Env:', 'style': {'code': 
+      True}}, {'type': 'text', 'text': ' '}, {'type': 'text', 'text':           
+      'Production-us'}, {'type': 'text', 'text': '\n'}, {'type': 'text', 'text':
+      'Org:', 'style': {'code': True}}, {'type': 'text', 'text': ' '}, {'type': 
+      'text', 'text': 'omarorg'}, {'type': 'text', 'text': '\n'}, {'type':      
+      'text', 'text': 'Account(s):', 'style': {'code': True}}, {'type': 'text', 
+      'text': ' '}, {'type': 'text', 'text': 'omartest'}, {'type': 'text',      
+      'text': '\n'}, {'type': 'text', 'text': 'Severity:', 'style': {'code':    
+      True}}, {'type': 'text', 'text': ' '}, {'type': 'emoji', 'name':          
+      'large_blue_circle', 'unicode': '1f535'}, {'type': 'text', 'text': '      
+      Low'}, {'type': 'text', 'text': '\n'}, {'type': 'text', 'text': 'Org      
+      Delete?', 'style': {'code': True}}, {'type': 'text', 'text': ' '},        
+      {'type': 'text', 'text': 'This is not a delete organization request'},    
+      {'type': 'text', 'text': '\n'}, {'type': 'text', 'text': 'Details:',      
+      'style': {'code': True}}, {'type': 'text', 'text': '\n'}, {'type': 'text',
+      'text': 'i want to exclude stopped vms'}, {'type': 'text', 'text': '\n'}, 
+      {'type': 'text', 'text': 'Extra data / logs / links:', 'style': {'code':  
+      True}}, {'type': 'text', 'text': '\n'}]}]}], 'reactions': [{'name':       
+      'todo-done', 'users': ['U02EHPYGM4Z'], 'count': 1}], 'channel_name':      
+      'sre-support', 'url':                                                     
+      'https://slack.com/archives/C076NHGBK8E/p1758025667259219'}, {'subtype':  
+      'bot_message', 'text': "<!subteam^S06EVJNSPK5> new service                
+      request:\n----------------------------------------------\n`From:`         
+      <@U05SNEM6CJ1>\n`Env:` Production-sap\n`Org:` Testing-test\n`Account(s):` 
+      \n`Severity:` :large_blue_circle: Low\n`Org Delete?` This is not a delete 
+      organization request\n`Details:`\nSAP Updated account sidescan exclusion  
+      list for September 2025.\nSAP would like to ensure that every account on  
+      the below spreadsheet has Sidescanning disabled. They still want to       
+      receive ControlPlane scans on these accounts. This is an updated list (as 
+      compared to what was submitted in July). This spreadsheet may have some   
+      accounts removed from the previous request, and it should include some of 
+      their currently excluded accounts - this is an updated list that should   
+      replace the list of accounts needing this rule applied.\nI'll update the  
+      Scan Config UI Bucket/ContainerImage rules once SRE completes this        
+      request.\n`Extra data / logs / links:`\n", 'username': 'SRE - Service     
+      request', 'type': 'message', 'ts': '1758016599.536679', 'bot_id':         
+      'B079CS1TC3F', 'app_id': 'A079158CF9V', 'trigger_id': 'Ft07A4FKFFU0',     
+      'workflow_id': 'Wf079CQJASP7', 'thread_ts': '1758016599.536679',          
+      'reply_count': 3, 'reply_users_count': 3, 'latest_reply':                 
+      '1758107243.765259', 'reply_users': ['B079CS1TC3F', 'U05SNEM6CJ1',        
+      'B07UCMK78F6'], 'is_locked': False, 'subscribed': False, 'blocks':        
+      [{'type': 'rich_text', 'block_id': 'K5MBV', 'elements': [{'type':         
+      'rich_text_section', 'elements': [{'type': 'usergroup', 'usergroup_id':   
+      'S06EVJNSPK5'}, {'type': 'text', 'text': ' new service                    
+      request:\n----------------------------------------------\n'}, {'type':    
+      'text', 'text': 'From:', 'style': {'code': True}}, {'type': 'text',       
+      'text': ' '}, {'type': 'user', 'user_id': 'U05SNEM6CJ1'}, {'type': 'text',
+      'text': '\n'}, {'type': 'text', 'text': 'Env:', 'style': {'code': True}}, 
+      {'type': 'text', 'text': ' '}, {'type': 'text', 'text': 'Production-sap'},
+      {'type': 'text', 'text': '\n'}, {'type': 'text', 'text': 'Org:', 'style': 
+      {'code': True}}, {'type': 'text', 'text': ' '}, {'type': 'text', 'text':  
+      'Testing-test'}, {'type': 'text', 'text': '\n'}, {'type': 'text', 'text': 
+      'Account(s):', 'style': {'code': True}}, {'type': 'text', 'text': ' '},   
+      {'type': 'text', 'text': '\n'}, {'type': 'text', 'text': 'Severity:',     
+      'style': {'code': True}}, {'type': 'text', 'text': ' '}, {'type': 'emoji',
+      'name': 'large_blue_circle', 'unicode': '1f535'}, {'type': 'text', 'text':
+      ' Low'}, {'type': 'text', 'text': '\n'}, {'type': 'text', 'text': 'Org    
+      Delete?', 'style': {'code': True}}, {'type': 'text', 'text': ' '},        
+      {'type': 'text', 'text': 'This is not a delete organization request'},    
+      {'type': 'text', 'text': '\n'}, {'type': 'text', 'text': 'Details:',      
+      'style': {'code': True}}, {'type': 'text', 'text': '\n'}, {'type': 'text',
+      'text': "SAP Updated account sidescan exclusion list for September        
+      2025.\nSAP would like to ensure that every account on the below           
+      spreadsheet has Sidescanning disabled. They still want to receive         
+      ControlPlane scans on these accounts. This is an updated list (as compared
+      to what was submitted in July). This spreadsheet may have some accounts   
+      removed from the previous request, and it should include some of their    
+      currently excluded accounts - this is an updated list that should replace 
+      the list of accounts needing this rule applied.\nI'll update the Scan     
+      Config UI Bucket/ContainerImage rules once SRE completes this request."}, 
+      {'type': 'text', 'text': '\n'}, {'type': 'text', 'text': 'Extra data /    
+      logs / links:', 'style': {'code': True}}, {'type': 'text', 'text':        
+      '\n'}]}]}], 'reactions': [{'name': 'todo-done', 'users': ['U02EHPYGM4Z'], 
+      'count': 1}], 'channel_name': 'sre-support', 'url':                       
+      'https://slack.com/archives/C076NHGBK8E/p1758016599536679'}, {'subtype':  
+      'channel_join', 'user': 'U08T4HEQBRD', 'text': '<@U08T4HEQBRD> has joined 
+      the channel', 'inviter': 'U02EHPYGM4Z', 'type': 'message', 'ts':          
+      '1758011865.327839', 'channel_name': 'sre-support', 'url':                
+      'https://slack.com/archives/C076NHGBK8E/p1758011865327839'}, {'subtype':  
+      'bot_message', 'text': '<!subteam^S06EVJNSPK5> new service                
+      request:\n----------------------------------------------\n`From:`         
+      <@U07E324HQTZ>\n`Env:` Production-us\n`Org:` AllTrails\n`Account(s):`     
+      \n`Severity:` :large_yellow_circle: Med\n`Org Delete?` This is not a      
+      delete organization request\n`Details:`\nIs it possible for us to disable 
+      ECR scanning per region? The AllTrails team would like to do so for       
+      eu-west-1 and ap-southeast-2 just for ECR as their images are duplicated  
+      across these regions.\n`Extra data / logs / links:`\n', 'username': 'SRE -
+      Service request', 'type': 'message', 'ts': '1757949819.112649', 'bot_id': 
+      'B079CS1TC3F', 'app_id': 'A079158CF9V', 'trigger_id': 'Ft07A4FKFFU0',     
+      'workflow_id': 'Wf079CQJASP7', 'thread_ts': '1757949819.112649',          
+      'reply_count': 3, 'reply_users_count': 3, 'latest_reply':                 
+      '1757950122.520209', 'reply_users': ['B079CS1TC3F', 'U02EHPYGM4Z',        
+      'B07UCMK78F6'], 'is_locked': False, 'subscribed': False, 'blocks':        
+      [{'type': 'rich_text', 'block_id': 'ERohz', 'elements': [{'type':         
+      'rich_text_section', 'elements': [{'type': 'usergroup', 'usergroup_id':   
+      'S06EVJNSPK5'}, {'type': 'text', 'text': ' new service                    
+      request:\n----------------------------------------------\n'}, {'type':    
+      'text', 'text': 'From:', 'style': {'code': True}}, {'type': 'text',       
+      'text': ' '}, {'type': 'user', 'user_id': 'U07E324HQTZ'}, {'type': 'text',
+      'text': '\n'}, {'type': 'text', 'text': 'Env:', 'style': {'code': True}}, 
+      {'type': 'text', 'text': ' '}, {'type': 'text', 'text': 'Production-us'}, 
+      {'type': 'text', 'text': '\n'}, {'type': 'text', 'text': 'Org:', 'style': 
+      {'code': True}}, {'type': 'text', 'text': ' '}, {'type': 'text', 'text':  
+      'AllTrails'}, {'type': 'text', 'text': '\n'}, {'type': 'text', 'text':    
+      'Account(s):', 'style': {'code': True}}, {'type': 'text', 'text': ' '},   
+      {'type': 'text', 'text': '\n'}, {'type': 'text', 'text': 'Severity:',     
+      'style': {'code': True}}, {'type': 'text', 'text': ' '}, {'type': 'emoji',
+      'name': 'large_yellow_circle', 'unicode': '1f7e1'}, {'type': 'text',      
+      'text': ' Med'}, {'type': 'text', 'text': '\n'}, {'type': 'text', 'text': 
+      'Org Delete?', 'style': {'code': True}}, {'type': 'text', 'text': ' '},   
+      {'type': 'text', 'text': 'This is not a delete organization request'},    
+      {'type': 'text', 'text': '\n'}, {'type': 'text', 'text': 'Details:',      
+      'style': {'code': True}}, {'type': 'text', 'text': '\n'}, {'type': 'text',
+      'text': 'Is it possible for us to disable ECR scanning per region? The    
+      AllTrails team would like to do so for eu-west-1 and ap-southeast-2 just  
+      for ECR as their images are duplicated across these regions.'}, {'type':  
+      'text', 'text': '\n'}, {'type': 'text', 'text': 'Extra data / logs /      
+      links:', 'style': {'code': True}}, {'type': 'text', 'text': '\n'}]}]}],   
+      'reactions': [{'name': 'todo-done', 'users': ['U02EHPYGM4Z'], 'count':    
+      1}], 'channel_name': 'sre-support', 'url':                                
+      'https://slack.com/archives/C076NHGBK8E/p1757949819112649'}, {'subtype':  
+      'bot_message', 'text': '<!subteam^S06EVJNSPK5> new service                
+      request:\n----------------------------------------------\n`From:`         
+      <@U07EL9Y2LK1>\n`Env:` Production-au\n`Org:` lululemon                    
+      Shanghai\n`Account(s):` \n`Severity:` :large_yellow_circle: Med\n`Org     
+      Delete?` This is not a delete organization request\n`Details:`\nCustomer  
+      would like to have the whitelist for scanning VMs\n\ndefault not          
+      scan\n\nScan with the following tag\nscan: yes\n`Extra data / logs /      
+      links:`\n', 'username': 'SRE - Service request', 'type': 'message', 'ts': 
+      '1757919550.352499', 'bot_id': 'B079CS1TC3F', 'app_id': 'A079158CF9V',    
+      'trigger_id': 'Ft07A4FKFFU0', 'workflow_id': 'Wf079CQJASP7', 'thread_ts': 
+      '1757919550.352499', 'reply_count': 3, 'reply_users_count': 3,            
+      'latest_reply': '1757920047.634849', 'reply_users': ['B079CS1TC3F',       
+      'U02EHPYGM4Z', 'B07UCMK78F6'], 'is_locked': False, 'subscribed': False,   
+      'blocks': [{'type': 'rich_text', 'block_id': 'xIQQZ', 'elements':         
+      [{'type': 'rich_text_section', 'elements': [{'type': 'usergroup',         
+      'usergroup_id': 'S06EVJNSPK5'}, {'type': 'text', 'text': ' new service    
+      request:\n----------------------------------------------\n'}, {'type':    
+      'text', 'text': 'From:', 'style': {'code': True}}, {'type': 'text',       
+      'text': ' '}, {'type': 'user', 'user_id': 'U07EL9Y2LK1'}, {'type': 'text',
+      'text': '\n'}, {'type': 'text', 'text': 'Env:', 'style': {'code': True}}, 
+      {'type': 'text', 'text': ' '}, {'type': 'text', 'text': 'Production-au'}, 
+      {'type': 'text', 'text': '\n'}, {'type': 'text', 'text': 'Org:', 'style': 
+      {'code': True}}, {'type': 'text', 'text': ' '}, {'type': 'text', 'text':  
+      'lululemon Shanghai'}, {'type': 'text', 'text': '\n'}, {'type': 'text',   
+      'text': 'Account(s):', 'style': {'code': True}}, {'type': 'text', 'text': 
+      ' '}, {'type': 'text', 'text': '\n'}, {'type': 'text', 'text':            
+      'Severity:', 'style': {'code': True}}, {'type': 'text', 'text': ' '},     
+      {'type': 'emoji', 'name': 'large_yellow_circle', 'unicode': '1f7e1'},     
+      {'type': 'text', 'text': ' Med'}, {'type': 'text', 'text': '\n'}, {'type':
+      'text', 'text': 'Org Delete?', 'style': {'code': True}}, {'type': 'text', 
+      'text': ' '}, {'type': 'text', 'text': 'This is not a delete organization 
+      request'}, {'type': 'text', 'text': '\n'}, {'type': 'text', 'text':       
+      'Details:', 'style': {'code': True}}, {'type': 'text', 'text': '\n'},     
+      {'type': 'text', 'text': 'Customer would like to have the whitelist for   
+      scanning VMs\n\ndefault not scan\n\nScan with the following tag\nscan:    
+      yes'}, {'type': 'text', 'text': '\n'}, {'type': 'text', 'text': 'Extra    
+      data / logs / links:', 'style': {'code': True}}, {'type': 'text', 'text': 
+      '\n'}]}]}], 'reactions': [{'name': 'todo-done', 'users': ['U02EHPYGM4Z'], 
+      'count': 1}], 'channel_name': 'sre-support', 'url':                       
+      'https://slack.com/archives/C076NHGBK8E/p1757919550352499'}]              
+DEBUG **********************  TOOL METRICS  **********************              
+DEBUG * Duration:                    0.3421s                                    
+DEBUG **********************  TOOL METRICS  **********************              
+DEBUG ======================== assistant =========================              
+DEBUG Now I'll analyze each message and provide search and response for the     
+      operational requests. I can see there are multiple service requests from  
+      the past 3 days. Let me start with the first few to provide comprehensive 
+      responses:                                                                
+DEBUG Tool Calls:                                                               
+        - ID: 'tooluse_1l5kkifdSAGpPWQQDjSEkA'                                  
+          Name: 'search_confluence_content'                                     
+          Arguments: 'query: volume limit increase 2TB disk storage, limit: 10, 
+      spaces: OPR'                                                              
+DEBUG ************************  METRICS  *************************              
+DEBUG * Tokens:                      input=17667, output=143, total=17810       
+DEBUG * Duration:                    4.6428s                                    
+DEBUG * Tokens per second:           30.8007 tokens/s                           
+DEBUG ************************  METRICS  *************************              
+DEBUG Running: search_confluence_content(query=..., limit=10, spaces=OPR)       
+DEBUG =========================== tool ===========================              
+DEBUG Tool call Id: tooluse_1l5kkifdSAGpPWQQDjSEkA                              
+DEBUG **********************  TOOL METRICS  **********************              
+DEBUG * Duration:                    0.9934s                                    
+DEBUG **********************  TOOL METRICS  **********************              
+DEBUG ======================== assistant =========================              
+DEBUG Tool Calls:                                                               
+        - ID: 'tooluse_n2DHZD9yQMmbbu-dsia9lA'                                  
+          Name: 'search_confluence_content'                                     
+          Arguments: 'limit: 10, spaces: OPR, query: disk size limit scan'      
+DEBUG ************************  METRICS  *************************              
+DEBUG * Tokens:                      input=17781, output=94, total=17875        
+DEBUG * Duration:                    2.6545s                                    
+DEBUG * Tokens per second:           35.4118 tokens/s                           
+DEBUG ************************  METRICS  *************************              
+DEBUG Running: search_confluence_content(limit=10, spaces=OPR, query=disk size  
+      limit scan)                                                               
+DEBUG =========================== tool ===========================              
+DEBUG Tool call Id: tooluse_n2DHZD9yQMmbbu-dsia9lA                              
+DEBUG [{'id': '3373137949', 'title': 'SRE Operations: Playbook', 'url':         
+      'https://orcasecurity.atlassian.net/wiki/spaces/OPR/pages/3373137949/SRE+O
+      perations+Playbook', 'space': {'key': 'OPR', 'name': 'SRE Operations',    
+      'display': 'SRE Operations (OPR)'}, 'type': 'page', 'lastModified':       
+      '2025-04-29T21:59:17.205Z', 'excerpt': '', 'team_context': 'SRE           
+      Operations'}, {'id': '2935882388', 'title': 'SRE Operations: How to Enable
+      the Max VM Volume Size preset, or Scan Only Boot Disks', 'url':           
+      'https://orcasecurity.atlassian.net/wiki/spaces/OPR/pages/2935882388/SRE+O
+      perations+How+to+Enable+the+Max+VM+Volume+Size+preset+or+Scan+Only+Boot+Di
+      sks', 'space': {'key': 'OPR', 'name': 'SRE Operations', 'display': 'SRE   
+      Operations (OPR)'}, 'type': 'page', 'lastModified':                       
+      '2025-05-20T14:23:35.683Z', 'excerpt': '', 'team_context': 'SRE           
+      Operations'}]                                                             
+DEBUG **********************  TOOL METRICS  **********************              
+DEBUG * Duration:                    0.6569s                                    
+DEBUG **********************  TOOL METRICS  **********************              
+DEBUG ======================== assistant =========================              
+DEBUG Tool Calls:                                                               
+        - ID: 'tooluse_ZGR_jdwQR5Svyc7WkX05Uw'                                  
+          Name: 'search_confluence_content'                                     
+          Arguments: 'limit: 10, spaces: OPR, query: stopped VM scan            
+      configuration'                                                            
+DEBUG ************************  METRICS  *************************              
+DEBUG * Tokens:                      input=18250, output=94, total=18344        
+DEBUG * Duration:                    2.2534s                                    
+DEBUG * Tokens per second:           41.7145 tokens/s                           
+DEBUG ************************  METRICS  *************************              
+DEBUG Running: search_confluence_content(limit=10, spaces=OPR, query=...)       
+DEBUG =========================== tool ===========================              
+DEBUG Tool call Id: tooluse_ZGR_jdwQR5Svyc7WkX05Uw                              
+DEBUG [{'id': '3034972210', 'title': 'SRE Operations: Configuring Launch Darkly 
+      Feature Flags', 'url':                                                    
+      'https://orcasecurity.atlassian.net/wiki/spaces/OPR/pages/3034972210/SRE+O
+      perations+Configuring+Launch+Darkly+Feature+Flags', 'space': {'key':      
+      'OPR', 'name': 'SRE Operations', 'display': 'SRE Operations (OPR)'},      
+      'type': 'page', 'lastModified': '2023-12-03T09:01:58.935Z', 'excerpt': '',
+      'team_context': 'SRE Operations'}, {'id': '2993618945', 'title': 'SRE     
+      Operations - Team Overview & Responsibilities', 'url':                    
+      'https://orcasecurity.atlassian.net/wiki/spaces/OPR/pages/2993618945/SRE+O
+      perations+-+Team+Overview+Responsibilities', 'space': {'key': 'OPR',      
+      'name': 'SRE Operations', 'display': 'SRE Operations (OPR)'}, 'type':     
+      'page', 'lastModified': '2023-05-31T13:56:44.003Z', 'excerpt': '',        
+      'team_context': 'SRE Operations'}]                                        
+DEBUG **********************  TOOL METRICS  **********************              
+DEBUG * Duration:                    0.5165s                                    
+DEBUG **********************  TOOL METRICS  **********************              
+DEBUG ======================== assistant =========================              
+DEBUG Tool Calls:                                                               
+        - ID: 'tooluse_DPTi-5tWRlS-MB4o7sUbxw'                                  
+          Name: 'search_confluence_content'                                     
+          Arguments: 'limit: 10, spaces: OPR, query: control stopped VM         
+      scanning'                                                                 
+DEBUG ************************  METRICS  *************************              
+DEBUG * Tokens:                      input=18701, output=94, total=18795        
+DEBUG * Duration:                    4.6709s                                    
+DEBUG * Tokens per second:           20.1245 tokens/s                           
+DEBUG ************************  METRICS  *************************              
+DEBUG Running: search_confluence_content(limit=10, spaces=OPR, query=...)       
+DEBUG =========================== tool ===========================              
+DEBUG Tool call Id: tooluse_DPTi-5tWRlS-MB4o7sUbxw                              
+DEBUG [{'id': '3034972210', 'title': 'SRE Operations: Configuring Launch Darkly 
+      Feature Flags', 'url':                                                    
+      'https://orcasecurity.atlassian.net/wiki/spaces/OPR/pages/3034972210/SRE+O
+      perations+Configuring+Launch+Darkly+Feature+Flags', 'space': {'key':      
+      'OPR', 'name': 'SRE Operations', 'display': 'SRE Operations (OPR)'},      
+      'type': 'page', 'lastModified': '2023-12-03T09:01:58.935Z', 'excerpt': '',
+      'team_context': 'SRE Operations'}, {'id': '2990047269', 'title': 'SRE     
+      Operations: Control Stopped VM scanning', 'url':                          
+      'https://orcasecurity.atlassian.net/wiki/spaces/OPR/pages/2990047269/SRE+O
+      perations+Control+Stopped+VM+scanning', 'space': {'key': 'OPR', 'name':   
+      'SRE Operations', 'display': 'SRE Operations (OPR)'}, 'type': 'page',     
+      'lastModified': '2025-05-16T12:23:11.445Z', 'excerpt': '', 'team_context':
+      'SRE Operations'}]                                                        
+DEBUG **********************  TOOL METRICS  **********************              
+DEBUG * Duration:                    0.6639s                                    
+DEBUG **********************  TOOL METRICS  **********************              
+DEBUG ======================== assistant =========================              
+DEBUG Tool Calls:                                                               
+        - ID: 'tooluse_LdBF7QFkQoGpjctKoD6zxA'                                  
+          Name: 'search_confluence_content'                                     
+          Arguments: 'limit: 10, spaces: OPR, query: domain name tenant         
+      organization update'                                                      
+DEBUG ************************  METRICS  *************************              
+DEBUG * Tokens:                      input=19153, output=95, total=19248        
+DEBUG * Duration:                    2.8488s                                    
+DEBUG * Tokens per second:           33.3471 tokens/s                           
+DEBUG ************************  METRICS  *************************              
+DEBUG Running: search_confluence_content(limit=10, spaces=OPR, query=...)       
+DEBUG =========================== tool ===========================              
+DEBUG Tool call Id: tooluse_LdBF7QFkQoGpjctKoD6zxA                              
+DEBUG [{'id': '3079274636', 'title': 'Orca and Technical Glossary', 'url':      
+      'https://orcasecurity.atlassian.net/wiki/spaces/OPR/pages/3079274636/Orca+
+      and+Technical+Glossary', 'space': {'key': 'OPR', 'name': 'SRE Operations',
+      'display': 'SRE Operations (OPR)'}, 'type': 'page', 'lastModified':       
+      '2025-01-27T22:24:22.392Z', 'excerpt': '', 'team_context': 'SRE           
+      Operations'}, {'id': '3029598319', 'title': 'Orca Monitor Accounts |      
+      Manage, Create and Operate', 'url':                                       
+      'https://orcasecurity.atlassian.net/wiki/spaces/OPR/pages/3029598319/Orca+
+      Monitor+Accounts+Manage+Create+and+Operate', 'space': {'key': 'OPR',      
+      'name': 'SRE Operations', 'display': 'SRE Operations (OPR)'}, 'type':     
+      'page', 'lastModified': '2025-08-06T06:34:38.257Z', 'excerpt': '',        
+      'team_context': 'SRE Operations'}]                                        
+DEBUG **********************  TOOL METRICS  **********************              
+DEBUG * Duration:                    0.7518s                                    
+DEBUG **********************  TOOL METRICS  **********************              
+DEBUG ======================== assistant =========================              
+DEBUG Tool Calls:                                                               
+        - ID: 'tooluse_NnIF7-_fRoCByxaFGj3q6g'                                  
+          Name: 'search_confluence_content'                                     
+          Arguments: 'limit: 10, spaces: OPR, query: skip by tag VM whitelisted 
+      tags scanning'                                                            
+DEBUG ************************  METRICS  *************************              
+DEBUG * Tokens:                      input=19598, output=99, total=19697        
+DEBUG * Duration:                    2.7576s                                    
+DEBUG * Tokens per second:           35.9012 tokens/s                           
+DEBUG ************************  METRICS  *************************              
+DEBUG Running: search_confluence_content(limit=10, spaces=OPR, query=...)       
+DEBUG =========================== tool ===========================              
+DEBUG Tool call Id: tooluse_NnIF7-_fRoCByxaFGj3q6g                              
+DEBUG **********************  TOOL METRICS  **********************              
+DEBUG * Duration:                    0.5798s                                    
+DEBUG **********************  TOOL METRICS  **********************              
+DEBUG ======================== assistant =========================              
+DEBUG Tool Calls:                                                               
+        - ID: 'tooluse_6Wts8oZxSH25DwY9hPpqmg'                                  
+          Name: 'search_confluence_content'                                     
+          Arguments: 'limit: 10, spaces: OPR, query: skip tag functionality scan
+      whitelist'                                                                
+DEBUG ************************  METRICS  *************************              
+DEBUG * Tokens:                      input=19713, output=96, total=19809        
+DEBUG * Duration:                    2.6893s                                    
+DEBUG * Tokens per second:           35.6972 tokens/s                           
+DEBUG ************************  METRICS  *************************              
+DEBUG Running: search_confluence_content(limit=10, spaces=OPR, query=...)       
+DEBUG =========================== tool ===========================              
+DEBUG Tool call Id: tooluse_6Wts8oZxSH25DwY9hPpqmg                              
+DEBUG **********************  TOOL METRICS  **********************              
+DEBUG * Duration:                    0.5773s                                    
+DEBUG **********************  TOOL METRICS  **********************              
+DEBUG ======================== assistant =========================              
+DEBUG Tool Calls:                                                               
+        - ID: 'tooluse_7-zi2DeISb2Ysrpno7chFQ'                                  
+          Name: 'search_confluence_content'                                     
+          Arguments: 'limit: 10, spaces: OPR, query: skip by tag'               
+DEBUG ************************  METRICS  *************************              
+DEBUG * Tokens:                      input=19825, output=95, total=19920        
+DEBUG * Duration:                    2.3176s                                    
+DEBUG * Tokens per second:           40.9912 tokens/s                           
+DEBUG ************************  METRICS  *************************              
+DEBUG Running: search_confluence_content(limit=10, spaces=OPR, query=skip by    
+      tag)                                                                      
+DEBUG =========================== tool ===========================              
+DEBUG Tool call Id: tooluse_7-zi2DeISb2Ysrpno7chFQ                              
+DEBUG [{'id': '3373137949', 'title': 'SRE Operations: Playbook', 'url':         
+      'https://orcasecurity.atlassian.net/wiki/spaces/OPR/pages/3373137949/SRE+O
+      perations+Playbook', 'space': {'key': 'OPR', 'name': 'SRE Operations',    
+      'display': 'SRE Operations (OPR)'}, 'type': 'page', 'lastModified':       
+      '2025-04-29T21:59:17.205Z', 'excerpt': '', 'team_context': 'SRE           
+      Operations'}, {'id': '3278536757', 'title': 'SRE Operations: Skip by Tag  
+      Functionality', 'url':                                                    
+      'https://orcasecurity.atlassian.net/wiki/spaces/OPR/pages/3278536757/SRE+O
+      perations+Skip+by+Tag+Functionality', 'space': {'key': 'OPR', 'name': 'SRE
+      Operations', 'display': 'SRE Operations (OPR)'}, 'type': 'page',          
+      'lastModified': '2025-08-25T14:48:54.002Z', 'excerpt': '', 'team_context':
+      'SRE Operations'}, {'id': '3143696385', 'title': 'SRE Operations: Disable 
+      Data Plane Scanning (CP Only)', 'url':                                    
+      'https://orcasecurity.atlassian.net/wiki/spaces/OPR/pages/3143696385/SRE+O
+      perations+Disable+Data+Plane+Scanning+CP+Only', 'space': {'key': 'OPR',   
+      'name': 'SRE Operations', 'display': 'SRE Operations (OPR)'}, 'type':     
+      'page', 'lastModified': '2025-08-14T17:29:37.110Z', 'excerpt': '',        
+      'team_context': 'SRE Operations'}, {'id': '3109519428', 'title': 'SRE     
+      Operations: Configuration page', 'url':                                   
+      'https://orcasecurity.atlassian.net/wiki/spaces/OPR/pages/3109519428/SRE+O
+      perations+Configuration+page', 'space': {'key': 'OPR', 'name': 'SRE       
+      Operations', 'display': 'SRE Operations (OPR)'}, 'type': 'page',          
+      'lastModified': '2023-10-26T10:08:58.113Z', 'excerpt': '', 'team_context':
+      'SRE Operations'}, {'id': '2997649513', 'title': 'SRE Operations:         
+      Configuring Special Preset Scan Parameters (Flow Control Preset)', 'url': 
+      'https://orcasecurity.atlassian.net/wiki/spaces/OPR/pages/2997649513/SRE+O
+      perations+Configuring+Special+Preset+Scan+Parameters+Flow+Control+Preset',
+       'space': {'key': 'OPR', 'name': 'SRE Operations', 'display': 'SRE        
+      Operations (OPR)'}, 'type': 'page', 'lastModified':                       
+      '2024-08-19T07:05:28.870Z', 'excerpt': '', 'team_context': 'SRE           
+      Operations'}, {'id': '2993618945', 'title': 'SRE Operations - Team        
+      Overview & Responsibilities', 'url':                                      
+      'https://orcasecurity.atlassian.net/wiki/spaces/OPR/pages/2993618945/SRE+O
+      perations+-+Team+Overview+Responsibilities', 'space': {'key': 'OPR',      
+      'name': 'SRE Operations', 'display': 'SRE Operations (OPR)'}, 'type':     
+      'page', 'lastModified': '2023-05-31T13:56:44.003Z', 'excerpt': '',        
+      'team_context': 'SRE Operations'}, {'id': '2972090545', 'title': 'SRE:    
+      Workbook/Quiz', 'url':                                                    
+      'https://orcasecurity.atlassian.net/wiki/spaces/OPR/pages/2972090545/SRE+W
+      orkbook+Quiz', 'space': {'key': 'OPR', 'name': 'SRE Operations',          
+      'display': 'SRE Operations (OPR)'}, 'type': 'page', 'lastModified':       
+      '2025-07-22T21:46:39.129Z', 'excerpt': '', 'team_context': 'SRE           
+      Operations'}]                                                             
+DEBUG **********************  TOOL METRICS  **********************              
+DEBUG * Duration:                    1.4038s                                    
+DEBUG **********************  TOOL METRICS  **********************              
+DEBUG ======================== assistant =========================              
+DEBUG Tool Calls:                                                               
+        - ID: 'tooluse_2u7jFeryQkSLukfOfsFz1w'                                  
+          Name: 'search_confluence_content'                                     
+          Arguments: 'limit: 10, spaces: OPR, query: enable re-enable scanning  
+      disable scan account organization'                                        
+DEBUG ************************  METRICS  *************************              
+DEBUG * Tokens:                      input=21100, output=99, total=21199        
+DEBUG * Duration:                    3.0481s                                    
+DEBUG * Tokens per second:           32.4794 tokens/s                           
+DEBUG ************************  METRICS  *************************              
+DEBUG Running: search_confluence_content(limit=10, spaces=OPR, query=...)       
+DEBUG =========================== tool ===========================              
+DEBUG Tool call Id: tooluse_2u7jFeryQkSLukfOfsFz1w                              
+DEBUG **********************  TOOL METRICS  **********************              
+DEBUG * Duration:                    0.5910s                                    
+DEBUG **********************  TOOL METRICS  **********************              
+DEBUG ======================== assistant =========================              
+DEBUG Tool Calls:                                                               
+        - ID: 'tooluse_mllbbk10QQC81zSbIBVtFg'                                  
+          Name: 'search_confluence_content'                                     
+          Arguments: 'limit: 10, spaces: OPR, query: block scans account        
+      organization level'                                                       
+DEBUG ************************  METRICS  *************************              
+DEBUG * Tokens:                      input=21215, output=96, total=21311        
+DEBUG * Duration:                    2.7055s                                    
+DEBUG * Tokens per second:           35.4835 tokens/s                           
+DEBUG ************************  METRICS  *************************              
+DEBUG Running: search_confluence_content(limit=10, spaces=OPR, query=...)       
+DEBUG =========================== tool ===========================              
+DEBUG Tool call Id: tooluse_mllbbk10QQC81zSbIBVtFg                              
+DEBUG [{'id': '3079274636', 'title': 'Orca and Technical Glossary', 'url':      
+      'https://orcasecurity.atlassian.net/wiki/spaces/OPR/pages/3079274636/Orca+
+      and+Technical+Glossary', 'space': {'key': 'OPR', 'name': 'SRE Operations',
+      'display': 'SRE Operations (OPR)'}, 'type': 'page', 'lastModified':       
+      '2025-01-27T22:24:22.392Z', 'excerpt': '', 'team_context': 'SRE           
+      Operations'}, {'id': '2940994329', 'title': 'SRE Operations: How to Block 
+      Scans At the Account or Organization Level', 'url':                       
+      'https://orcasecurity.atlassian.net/wiki/spaces/OPR/pages/2940994329/SRE+O
+      perations+How+to+Block+Scans+At+the+Account+or+Organization+Level',       
+      'space': {'key': 'OPR', 'name': 'SRE Operations', 'display': 'SRE         
+      Operations (OPR)'}, 'type': 'page', 'lastModified':                       
+      '2024-11-04T15:44:13.142Z', 'excerpt': '', 'team_context': 'SRE           
+      Operations'}, {'id': '2748579887', 'title': 'SRE Operations Team Alerts', 
+      'url':                                                                    
+      'https://orcasecurity.atlassian.net/wiki/spaces/OPR/pages/2748579887/SRE+O
+      perations+Team+Alerts', 'space': {'key': 'OPR', 'name': 'SRE Operations', 
+      'display': 'SRE Operations (OPR)'}, 'type': 'page', 'lastModified':       
+      '2024-03-25T18:53:56.250Z', 'excerpt': '', 'team_context': 'SRE           
+      Operations'}]                                                             
+DEBUG **********************  TOOL METRICS  **********************              
+DEBUG * Duration:                    0.6586s                                    
+DEBUG **********************  TOOL METRICS  **********************              
+DEBUG ======================== assistant =========================              
+DEBUG Tool Calls:                                                               
+        - ID: 'tooluse_ejJBp2UaQoySCqxQs30fHg'                                  
+          Name: 'search_confluence_content'                                     
+          Arguments: 'limit: 10, spaces: OPR, query: exclude stopped VMs        
+      scanning'                                                                 
+DEBUG ************************  METRICS  *************************              
+DEBUG * Tokens:                      input=21831, output=95, total=21926        
+DEBUG * Duration:                    2.5730s                                    
+DEBUG * Tokens per second:           36.9223 tokens/s                           
+DEBUG ************************  METRICS  *************************              
+DEBUG Running: search_confluence_content(limit=10, spaces=OPR, query=...)       
+DEBUG =========================== tool ===========================              
+DEBUG Tool call Id: tooluse_ejJBp2UaQoySCqxQs30fHg                              
+DEBUG [{'id': '3034972210', 'title': 'SRE Operations: Configuring Launch Darkly 
+      Feature Flags', 'url':                                                    
+      'https://orcasecurity.atlassian.net/wiki/spaces/OPR/pages/3034972210/SRE+O
+      perations+Configuring+Launch+Darkly+Feature+Flags', 'space': {'key':      
+      'OPR', 'name': 'SRE Operations', 'display': 'SRE Operations (OPR)'},      
+      'type': 'page', 'lastModified': '2023-12-03T09:01:58.935Z', 'excerpt': '',
+      'team_context': 'SRE Operations'}, {'id': '2993618945', 'title': 'SRE     
+      Operations - Team Overview & Responsibilities', 'url':                    
+      'https://orcasecurity.atlassian.net/wiki/spaces/OPR/pages/2993618945/SRE+O
+      perations+-+Team+Overview+Responsibilities', 'space': {'key': 'OPR',      
+      'name': 'SRE Operations', 'display': 'SRE Operations (OPR)'}, 'type':     
+      'page', 'lastModified': '2023-05-31T13:56:44.003Z', 'excerpt': '',        
+      'team_context': 'SRE Operations'}, {'id': '2990047269', 'title': 'SRE     
+      Operations: Control Stopped VM scanning', 'url':                          
+      'https://orcasecurity.atlassian.net/wiki/spaces/OPR/pages/2990047269/SRE+O
+      perations+Control+Stopped+VM+scanning', 'space': {'key': 'OPR', 'name':   
+      'SRE Operations', 'display': 'SRE Operations (OPR)'}, 'type': 'page',     
+      'lastModified': '2025-05-16T12:23:11.445Z', 'excerpt': '', 'team_context':
+      'SRE Operations'}]                                                        
+DEBUG **********************  TOOL METRICS  **********************              
+DEBUG * Duration:                    0.8184s                                    
+DEBUG **********************  TOOL METRICS  **********************              
+DEBUG ======================== assistant =========================              
+DEBUG Tool Calls:                                                               
+        - ID: 'tooluse_Mvs1T_duSfal0oLOf-KLmw'                                  
+          Name: 'search_confluence_content'                                     
+          Arguments: 'limit: 10, spaces: OPR, query: sidescanning disable data  
+      plane control plane only'                                                 
+DEBUG ************************  METRICS  *************************              
+DEBUG * Tokens:                      input=22448, output=99, total=22547        
+DEBUG * Duration:                    3.3039s                                    
+DEBUG * Tokens per second:           29.9646 tokens/s                           
+DEBUG ************************  METRICS  *************************              
+DEBUG Running: search_confluence_content(limit=10, spaces=OPR, query=...)       
+DEBUG =========================== tool ===========================              
+DEBUG Tool call Id: tooluse_Mvs1T_duSfal0oLOf-KLmw                              
+DEBUG [{'id': '3992748185', 'title': 'SRE Operations: Scan Setting Presets for  
+      Sidescanning Disable/Enable', 'url':                                      
+      'https://orcasecurity.atlassian.net/wiki/spaces/OPR/pages/3992748185/SRE+O
+      perations+Scan+Setting+Presets+for+Sidescanning+Disable+Enable', 'space': 
+      {'key': 'OPR', 'name': 'SRE Operations', 'display': 'SRE Operations       
+      (OPR)'}, 'type': 'page', 'lastModified': '2025-08-22T21:57:35.318Z',      
+      'excerpt': '', 'team_context': 'SRE Operations'}, {'id': '3278536757',    
+      'title': 'SRE Operations: Skip by Tag Functionality', 'url':              
+      'https://orcasecurity.atlassian.net/wiki/spaces/OPR/pages/3278536757/SRE+O
+      perations+Skip+by+Tag+Functionality', 'space': {'key': 'OPR', 'name': 'SRE
+      Operations', 'display': 'SRE Operations (OPR)'}, 'type': 'page',          
+      'lastModified': '2025-08-25T14:48:54.002Z', 'excerpt': '', 'team_context':
+      'SRE Operations'}, {'id': '3143696385', 'title': 'SRE Operations: Disable 
+      Data Plane Scanning (CP Only)', 'url':                                    
+      'https://orcasecurity.atlassian.net/wiki/spaces/OPR/pages/3143696385/SRE+O
+      perations+Disable+Data+Plane+Scanning+CP+Only', 'space': {'key': 'OPR',   
+      'name': 'SRE Operations', 'display': 'SRE Operations (OPR)'}, 'type':     
+      'page', 'lastModified': '2025-08-14T17:29:37.110Z', 'excerpt': '',        
+      'team_context': 'SRE Operations'}]                                        
+DEBUG **********************  TOOL METRICS  **********************              
+DEBUG * Duration:                    0.6803s                                    
+DEBUG **********************  TOOL METRICS  **********************              
+DEBUG ======================== assistant =========================              
+DEBUG Tool Calls:                                                               
+        - ID: 'tooluse_4e-PnLJpQWSFW5kVk8pyjA'                                  
+          Name: 'search_confluence_content'                                     
+          Arguments: 'limit: 10, spaces: OPR'                                   
+DEBUG ************************  METRICS  *************************              
+DEBUG * Tokens:                      input=23092, output=88, total=23180        
+DEBUG * Duration:                    4.6976s                                    
+DEBUG * Tokens per second:           18.7331 tokens/s                           
+DEBUG ************************  METRICS  *************************              
+DEBUG Running: search_confluence_content(limit=10, spaces=OPR)                  
+WARNING  Could not run function search_confluence_content(limit=10, spaces=OPR) 
+ERROR    1 validation error for search_confluence_content                       
+         query                                                                  
+           Missing required argument [type=missing_argument,                    
+         input_value=ArgsKwargs((), {'limit': 10, 'spaces': 'OPR'}),            
+         input_type=ArgsKwargs]                                                 
+             For further information visit                                      
+         https://errors.pydantic.dev/2.11/v/missing_argument                    
+         Traceback (most recent call last):                                     
+           File                                                                 
+         "/Users/rondavis/src/orcathon-ai-sre/.venv/lib/python3.13/site-packages
+         /agno/tools/function.py", line 728, in execute                         
+             result = self.function.entrypoint(**entrypoint_args,               
+         **self.arguments)  # type: ignore                                      
+           File                                                                 
+         "/Users/rondavis/src/orcathon-ai-sre/.venv/lib/python3.13/site-packages
+         /pydantic/_internal/_validate_call.py", line 39, in wrapper_function   
+             return wrapper(*args, **kwargs)                                    
+           File                                                                 
+         "/Users/rondavis/src/orcathon-ai-sre/.venv/lib/python3.13/site-packages
+         /pydantic/_internal/_validate_call.py", line 136, in __call__          
+             res =                                                              
+         self.__pydantic_validator__.validate_python(pydantic_core.ArgsKwargs(ar
+         gs, kwargs))                                                           
+         pydantic_core._pydantic_core.ValidationError: 1 validation error for   
+         search_confluence_content                                              
+         query                                                                  
+           Missing required argument [type=missing_argument,                    
+         input_value=ArgsKwargs((), {'limit': 10, 'spaces': 'OPR'}),            
+         input_type=ArgsKwargs]                                                 
+             For further information visit                                      
+         https://errors.pydantic.dev/2.11/v/missing_argument                    
+DEBUG =========================== tool ===========================              
+DEBUG Tool call Id: tooluse_4e-PnLJpQWSFW5kVk8pyjA                              
+DEBUG 1 validation error for search_confluence_content                          
+      query                                                                     
+        Missing required argument [type=missing_argument,                       
+      input_value=ArgsKwargs((), {'limit': 10, 'spaces': 'OPR'}),               
+      input_type=ArgsKwargs]                                                    
+          For further information visit                                         
+      https://errors.pydantic.dev/2.11/v/missing_argument                       
+DEBUG **********************  TOOL METRICS  **********************              
+DEBUG * Duration:                    0.0040s                                    
+DEBUG **********************  TOOL METRICS  **********************              
+DEBUG ======================== assistant =========================              
+DEBUG Tool Calls:                                                               
+        - ID: 'tooluse_CPEiNIYlQB2aNR6o4qhI6Q'                                  
+          Name: 'search_confluence_content'                                     
+          Arguments: 'limit: 10, spaces: OPR, query: ECR scanning region        
+      disable'                                                                  
+DEBUG ************************  METRICS  *************************              
+DEBUG * Tokens:                      input=23271, output=95, total=23366        
+DEBUG * Duration:                    2.6473s                                    
+DEBUG * Tokens per second:           35.8859 tokens/s                           
+DEBUG ************************  METRICS  *************************              
+DEBUG Running: search_confluence_content(limit=10, spaces=OPR, query=...)       
+DEBUG =========================== tool ===========================              
+DEBUG Tool call Id: tooluse_CPEiNIYlQB2aNR6o4qhI6Q                              
+DEBUG [{'id': '3034972210', 'title': 'SRE Operations: Configuring Launch Darkly 
+      Feature Flags', 'url':                                                    
+      'https://orcasecurity.atlassian.net/wiki/spaces/OPR/pages/3034972210/SRE+O
+      perations+Configuring+Launch+Darkly+Feature+Flags', 'space': {'key':      
+      'OPR', 'name': 'SRE Operations', 'display': 'SRE Operations (OPR)'},      
+      'type': 'page', 'lastModified': '2023-12-03T09:01:58.935Z', 'excerpt': '',
+      'team_context': 'SRE Operations'}, {'id': '2993618945', 'title': 'SRE     
+      Operations - Team Overview & Responsibilities', 'url':                    
+      'https://orcasecurity.atlassian.net/wiki/spaces/OPR/pages/2993618945/SRE+O
+      perations+-+Team+Overview+Responsibilities', 'space': {'key': 'OPR',      
+      'name': 'SRE Operations', 'display': 'SRE Operations (OPR)'}, 'type':     
+      'page', 'lastModified': '2023-05-31T13:56:44.003Z', 'excerpt': '',        
+      'team_context': 'SRE Operations'}, {'id': '2748579887', 'title': 'SRE     
+      Operations Team Alerts', 'url':                                           
+      'https://orcasecurity.atlassian.net/wiki/spaces/OPR/pages/2748579887/SRE+O
+      perations+Team+Alerts', 'space': {'key': 'OPR', 'name': 'SRE Operations', 
+      'display': 'SRE Operations (OPR)'}, 'type': 'page', 'lastModified':       
+      '2024-03-25T18:53:56.250Z', 'excerpt': '', 'team_context': 'SRE           
+      Operations'}]                                                             
+DEBUG **********************  TOOL METRICS  **********************              
+DEBUG * Duration:                    0.5178s                                    
+DEBUG **********************  TOOL METRICS  **********************              
+DEBUG ======================== assistant =========================              
+DEBUG I need to check the Slack channel with the proper ID to send the message. 
+      Let me get the Slack messages and then post the response to the correct   
+      channel.                                                                  
+DEBUG Tool Calls:                                                               
+        - ID: 'tooluse_xWhwgQ55TA-2W5nrMYXSEA'                                  
+          Name: 'get_slack_channel_info'                                        
+          Arguments: 'channel_id: C03P98HRUSG'                                  
+DEBUG ************************  METRICS  *************************              
+DEBUG * Tokens:                      input=23881, output=101, total=23982       
+DEBUG * Duration:                    3.6584s                                    
+DEBUG * Tokens per second:           27.6079 tokens/s                           
+DEBUG ************************  METRICS  *************************              
+DEBUG Running: get_slack_channel_info(channel_id=C03P98HRUSG)                   
+DEBUG =========================== tool ===========================              
+DEBUG Tool call Id: tooluse_xWhwgQ55TA-2W5nrMYXSEA                              
+DEBUG {'id': 'C03P98HRUSG', 'created': 1657635599, 'creator': 'U02EHPYGM4Z',    
+      'is_org_shared': False, 'is_im': False, 'context_team_id': 'TEHG4JU2C',   
+      'updated': 1758104276810, 'name': 'alerts-testing-operations',            
+      'name_normalized': 'alerts-testing-operations', 'is_channel': True,       
+      'is_group': False, 'is_mpim': False, 'is_private': True, 'is_archived':   
+      False, 'is_general': False, 'is_shared': False, 'is_ext_shared': False,   
+      'unlinked': 0, 'is_pending_ext_shared': False, 'pending_shared': [],      
+      'parent_conversation': None, 'purpose': {'value': '', 'creator': '',      
+      'last_set': 0}, 'topic': {'value':                                        
+      '<https://hooks.slack.com/services/TEHG4JU2C/B03NS893KGF/Jf4ODb5kdHgum6c2Y
+      rkifXOv>', 'creator': 'U02EHPYGM4Z', 'last_set': 1663505573},             
+      'shared_team_ids': ['TEHG4JU2C'], 'pending_connected_team_ids': [],       
+      'is_member': True, 'is_open': True, 'last_read': '1757940355.175239',     
+      'properties': {'meeting_notes': {'file_id': 'F09FNLE6ACA'}, 'tabs':       
+      [{'type': 'files', 'label': '', 'id': 'files'}, {'type': 'workflows',     
+      'label': '', 'id': 'workflows'}, {'id': 'Ct09FL9A34BX', 'type': 'canvas', 
+      'data': {'file_id': 'F09FNLE6ACA', 'shared_ts': '1758104276.431139'},     
+      'label': ''}], 'tabz': [{'type': 'files'}, {'type': 'workflows'}, {'id':  
+      'Ct09FL9A34BX', 'type': 'canvas', 'data': {'file_id': 'F09FNLE6ACA',      
+      'shared_ts': '1758104276.431139'}}]}}                                     
+DEBUG **********************  TOOL METRICS  **********************              
+DEBUG * Duration:                    0.1200s                                    
+DEBUG **********************  TOOL METRICS  **********************              
+DEBUG ======================== assistant =========================              
+DEBUG Based on the Slack messages from the past 3 days in the #sre-support      
+      channel, I've identified 11 operational requests. Let me compose the      
+      analysis and send it to the alerts-testing-operations channel:            
+DEBUG Tool Calls:                                                               
+        - ID: 'tooluse_ma-JttDfRCeAiRDwHvyLSg'                                  
+          Name: 'get_slack_messages'                                            
+          Arguments: 'channel_id: C03P98HRUSG, start_date: 2025-09-17, end_date:
+      2025-09-17, limit: 1'                                                     
+DEBUG ************************  METRICS  *************************              
+DEBUG * Tokens:                      input=24567, output=178, total=24745       
+DEBUG * Duration:                    4.4926s                                    
+DEBUG * Tokens per second:           39.6206 tokens/s                           
+DEBUG ************************  METRICS  *************************              
+DEBUG Running: get_slack_messages(...)                                          
+xxxx ('C03P98HRUSG', '2025-09-17', '2025-09-17', 1)
+DEBUG =========================== tool ===========================              
+DEBUG Tool call Id: tooluse_ma-JttDfRCeAiRDwHvyLSg                              
+DEBUG [{'user': 'U090E0F435W', 'type': 'message', 'ts': '1758108876.137729',    
+      'client_msg_id': 'a857d758-9095-4d03-990b-f4ccde0ed2d8', 'text':          
+      '<@U05L2T0H6S3> i want to see if there was a rollout later', 'team':      
+      'TEHG4JU2C', 'thread_ts': '1758108876.137729', 'reply_count': 11,         
+      'reply_users_count': 1, 'latest_reply': '1758110298.670309',              
+      'reply_users': ['U090E0F435W'], 'is_locked': False, 'subscribed': False,  
+      'blocks': [{'type': 'rich_text', 'block_id': 'nR6oh', 'elements':         
+      [{'type': 'rich_text_section', 'elements': [{'type': 'user', 'user_id':   
+      'U05L2T0H6S3'}, {'type': 'text', 'text': ' i want to see if there was a   
+      rollout later'}]}]}], 'channel_name': 'alerts-testing-operations', 'url': 
+      'https://slack.com/archives/C03P98HRUSG/p1758108876137729'}, {'user':     
+      'U090E0F435W', 'type': 'message', 'ts': '1758107993.847239',              
+      'client_msg_id': 'a152c371-0099-4982-b8ed-3341a6dce22c', 'text':          
+      '<@U05L2T0H6S3> damn it', 'team': 'TEHG4JU2C', 'blocks': [{'type':        
+      'rich_text', 'block_id': 'A/Z2L', 'elements': [{'type':                   
+      'rich_text_section', 'elements': [{'type': 'user', 'user_id':             
+      'U05L2T0H6S3'}, {'type': 'text', 'text': ' damn it'}]}]}], 'channel_name':
+      'alerts-testing-operations', 'url':                                       
+      'https://slack.com/archives/C03P98HRUSG/p1758107993847239'}, {'user':     
+      'U090E0F435W', 'type': 'message', 'ts': '1758107572.475469',              
+      'client_msg_id': '81c4167b-ae88-409d-8baa-7a0bb11cde74', 'text':          
+      '<@U05L2T0H6S3> yallla', 'team': 'TEHG4JU2C', 'thread_ts':                
+      '1758107572.475469', 'reply_count': 4, 'reply_users_count': 1,            
+      'latest_reply': '1758108170.298089', 'reply_users': ['U090E0F435W'],      
+      'is_locked': False, 'subscribed': False, 'blocks': [{'type': 'rich_text', 
+      'block_id': 'D69Ii', 'elements': [{'type': 'rich_text_section',           
+      'elements': [{'type': 'user', 'user_id': 'U05L2T0H6S3'}, {'type': 'text', 
+      'text': ' yallla'}]}]}], 'channel_name': 'alerts-testing-operations',     
+      'url': 'https://slack.com/archives/C03P98HRUSG/p1758107572475469'},       
+      {'user': 'U090E0F435W', 'type': 'message', 'ts': '1758107448.148869',     
+      'client_msg_id': '864ee19e-663f-412d-bfe2-35f182d12c83', 'text':          
+      '<@U05L2T0H6S3> again test', 'team': 'TEHG4JU2C', 'blocks': [{'type':     
+      'rich_text', 'block_id': 'x0uNn', 'elements': [{'type':                   
+      'rich_text_section', 'elements': [{'type': 'user', 'user_id':             
+      'U05L2T0H6S3'}, {'type': 'text', 'text': ' again test'}]}]}],             
+      'channel_name': 'alerts-testing-operations', 'url':                       
+      'https://slack.com/archives/C03P98HRUSG/p1758107448148869'}, {'user':     
+      'U090E0F435W', 'type': 'message', 'ts': '1758106035.304069',              
+      'client_msg_id': '9b1f50f1-aab2-498b-b01b-7ba05dc2ac01', 'text':          
+      '<@U05L2T0H6S3> hereeee3', 'team': 'TEHG4JU2C', 'blocks': [{'type':       
+      'rich_text', 'block_id': 'QIqo0', 'elements': [{'type':                   
+      'rich_text_section', 'elements': [{'type': 'user', 'user_id':             
+      'U05L2T0H6S3'}, {'type': 'text', 'text': ' hereeee3'}]}]}],               
+      'channel_name': 'alerts-testing-operations', 'url':                       
+      'https://slack.com/archives/C03P98HRUSG/p1758106035304069'}, {'user':     
+      'U090E0F435W', 'type': 'message', 'ts': '1758104303.787789',              
+      'client_msg_id': '1ca3949d-3b00-4103-8aa6-c459553bf91a', 'text':          
+      '<@U05L2T0H6S3> bla bla', 'team': 'TEHG4JU2C', 'thread_ts':               
+      '1758104303.787789', 'reply_count': 2, 'reply_users_count': 1,            
+      'latest_reply': '1758106007.750409', 'reply_users': ['U090E0F435W'],      
+      'is_locked': False, 'subscribed': False, 'blocks': [{'type': 'rich_text', 
+      'block_id': 'vjYF0', 'elements': [{'type': 'rich_text_section',           
+      'elements': [{'type': 'user', 'user_id': 'U05L2T0H6S3'}, {'type': 'text', 
+      'text': ' bla bla'}]}]}], 'channel_name': 'alerts-testing-operations',    
+      'url': 'https://slack.com/archives/C03P98HRUSG/p1758104303787789'},       
+      {'user': 'U090E0F435W', 'type': 'message', 'ts': '1758104288.549349',     
+      'client_msg_id': 'e35ce5fe-a59e-4756-a364-4d7665c37b46', 'text':          
+      '<@U05L2T0H6S3>', 'team': 'TEHG4JU2C', 'blocks': [{'type': 'rich_text',   
+      'block_id': 'UJcUC', 'elements': [{'type': 'rich_text_section',           
+      'elements': [{'type': 'user', 'user_id': 'U05L2T0H6S3'}]}]}],             
+      'channel_name': 'alerts-testing-operations', 'url':                       
+      'https://slack.com/archives/C03P98HRUSG/p1758104288549349'}, {'user':     
+      'U02EHPYGM4Z', 'type': 'message', 'ts': '1758099740.405689',              
+      'client_msg_id': 'a25cb2f8-80f7-43a3-9be0-63198a6af5cf', 'text':          
+      '.........................................................................
+      ..........................................................................
+      ..........................................................................
+      ..........................................................................
+      ..........................................................................
+      ...........................', 'team': 'TEHG4JU2C', 'blocks': [{'type':    
+      'rich_text', 'block_id': '27kbx', 'elements': [{'type':                   
+      'rich_text_section', 'elements': [{'type': 'text', 'text':                
+      '.........................................................................
+      ..........................................................................
+      ..........................................................................
+      ..........................................................................
+      ..........................................................................
+      ...........................'}]}]}], 'channel_name':                       
+      'alerts-testing-operations', 'url':                                       
+      'https://slack.com/archives/C03P98HRUSG/p1758099740405689'}, {'user':     
+      'U02EHPYGM4Z', 'type': 'message', 'ts': '1758099740.005459',              
+      'client_msg_id': '0cc01308-ba32-459a-b5d7-d4df3e0b055d', 'text':          
+      '.........................................................................
+      ..........................................................................
+      ..........................................................................
+      ..........................................................................
+      ..........................................................................
+      ...........................', 'team': 'TEHG4JU2C', 'blocks': [{'type':    
+      'rich_text', 'block_id': '27kbx', 'elements': [{'type':                   
+      'rich_text_section', 'elements': [{'type': 'text', 'text':                
+      '.........................................................................
+      ..........................................................................
+      ..........................................................................
+      ..........................................................................
+      ..........................................................................
+      ...........................'}]}]}], 'channel_name':                       
+      'alerts-testing-operations', 'url':                                       
+      'https://slack.com/archives/C03P98HRUSG/p1758099740005459'}, {'user':     
+      'U02EHPYGM4Z', 'type': 'message', 'ts': '1758099739.600989',              
+      'client_msg_id': 'dbb535bf-a113-4879-a5e8-c18e889272bd', 'text':          
+      '.........................................................................
+      ..........................................................................
+      ..........................................................................
+      ..........................................................................
+      ..........................................................................
+      ...........................', 'team': 'TEHG4JU2C', 'blocks': [{'type':    
+      'rich_text', 'block_id': '27kbx', 'elements': [{'type':                   
+      'rich_text_section', 'elements': [{'type': 'text', 'text':                
+      '.........................................................................
+      ..........................................................................
+      ..........................................................................
+      ..........................................................................
+      ..........................................................................
+      ...........................'}]}]}], 'channel_name':                       
+      'alerts-testing-operations', 'url':                                       
+      'https://slack.com/archives/C03P98HRUSG/p1758099739600989'}]              
+DEBUG **********************  TOOL METRICS  **********************              
+DEBUG * Duration:                    10.6030s                                   
+DEBUG **********************  TOOL METRICS  **********************              
+DEBUG ======================== assistant =========================              
+DEBUG Based on my analysis of the past 3 days of messages from the #sre-support 
+      channel, I've identified 12 operational requests. Let me compose a        
+      comprehensive response with the findings and relevant documentation for   
+      each request:                                                             
+DEBUG Tool Calls:                                                               
+        - ID: 'tooluse_5mO579TvSoqKLphmrFxLGA'                                  
+          Name: 'get_slack_messages'                                            
+          Arguments: 'end_date: 2025-09-17, limit: 1, channel_id: C03P98HRUSG,  
+      start_date: 2025-09-17'                                                   
+DEBUG ************************  METRICS  *************************              
+DEBUG * Tokens:                      input=27288, output=177, total=27465       
+DEBUG * Duration:                    4.8840s                                    
+DEBUG * Tokens per second:           36.2410 tokens/s                           
+DEBUG ************************  METRICS  *************************              
+DEBUG Running: get_slack_messages(...)                                          
+xxxx ('C03P98HRUSG', '2025-09-17', '2025-09-17', 1)
+DEBUG =========================== tool ===========================              
+DEBUG Tool call Id: tooluse_5mO579TvSoqKLphmrFxLGA                              
+DEBUG [{'user': 'U090E0F435W', 'type': 'message', 'ts': '1758108876.137729',    
+      'client_msg_id': 'a857d758-9095-4d03-990b-f4ccde0ed2d8', 'text':          
+      '<@U05L2T0H6S3> i want to see if there was a rollout later', 'team':      
+      'TEHG4JU2C', 'thread_ts': '1758108876.137729', 'reply_count': 11,         
+      'reply_users_count': 1, 'latest_reply': '1758110298.670309',              
+      'reply_users': ['U090E0F435W'], 'is_locked': False, 'subscribed': False,  
+      'blocks': [{'type': 'rich_text', 'block_id': 'nR6oh', 'elements':         
+      [{'type': 'rich_text_section', 'elements': [{'type': 'user', 'user_id':   
+      'U05L2T0H6S3'}, {'type': 'text', 'text': ' i want to see if there was a   
+      rollout later'}]}]}], 'channel_name': 'alerts-testing-operations', 'url': 
+      'https://slack.com/archives/C03P98HRUSG/p1758108876137729'}, {'user':     
+      'U090E0F435W', 'type': 'message', 'ts': '1758107993.847239',              
+      'client_msg_id': 'a152c371-0099-4982-b8ed-3341a6dce22c', 'text':          
+      '<@U05L2T0H6S3> damn it', 'team': 'TEHG4JU2C', 'blocks': [{'type':        
+      'rich_text', 'block_id': 'A/Z2L', 'elements': [{'type':                   
+      'rich_text_section', 'elements': [{'type': 'user', 'user_id':             
+      'U05L2T0H6S3'}, {'type': 'text', 'text': ' damn it'}]}]}], 'channel_name':
+      'alerts-testing-operations', 'url':                                       
+      'https://slack.com/archives/C03P98HRUSG/p1758107993847239'}, {'user':     
+      'U090E0F435W', 'type': 'message', 'ts': '1758107572.475469',              
+      'client_msg_id': '81c4167b-ae88-409d-8baa-7a0bb11cde74', 'text':          
+      '<@U05L2T0H6S3> yallla', 'team': 'TEHG4JU2C', 'thread_ts':                
+      '1758107572.475469', 'reply_count': 4, 'reply_users_count': 1,            
+      'latest_reply': '1758108170.298089', 'reply_users': ['U090E0F435W'],      
+      'is_locked': False, 'subscribed': False, 'blocks': [{'type': 'rich_text', 
+      'block_id': 'D69Ii', 'elements': [{'type': 'rich_text_section',           
+      'elements': [{'type': 'user', 'user_id': 'U05L2T0H6S3'}, {'type': 'text', 
+      'text': ' yallla'}]}]}], 'channel_name': 'alerts-testing-operations',     
+      'url': 'https://slack.com/archives/C03P98HRUSG/p1758107572475469'},       
+      {'user': 'U090E0F435W', 'type': 'message', 'ts': '1758107448.148869',     
+      'client_msg_id': '864ee19e-663f-412d-bfe2-35f182d12c83', 'text':          
+      '<@U05L2T0H6S3> again test', 'team': 'TEHG4JU2C', 'blocks': [{'type':     
+      'rich_text', 'block_id': 'x0uNn', 'elements': [{'type':                   
+      'rich_text_section', 'elements': [{'type': 'user', 'user_id':             
+      'U05L2T0H6S3'}, {'type': 'text', 'text': ' again test'}]}]}],             
+      'channel_name': 'alerts-testing-operations', 'url':                       
+      'https://slack.com/archives/C03P98HRUSG/p1758107448148869'}, {'user':     
+      'U090E0F435W', 'type': 'message', 'ts': '1758106035.304069',              
+      'client_msg_id': '9b1f50f1-aab2-498b-b01b-7ba05dc2ac01', 'text':          
+      '<@U05L2T0H6S3> hereeee3', 'team': 'TEHG4JU2C', 'blocks': [{'type':       
+      'rich_text', 'block_id': 'QIqo0', 'elements': [{'type':                   
+      'rich_text_section', 'elements': [{'type': 'user', 'user_id':             
+      'U05L2T0H6S3'}, {'type': 'text', 'text': ' hereeee3'}]}]}],               
+      'channel_name': 'alerts-testing-operations', 'url':                       
+      'https://slack.com/archives/C03P98HRUSG/p1758106035304069'}, {'user':     
+      'U090E0F435W', 'type': 'message', 'ts': '1758104303.787789',              
+      'client_msg_id': '1ca3949d-3b00-4103-8aa6-c459553bf91a', 'text':          
+      '<@U05L2T0H6S3> bla bla', 'team': 'TEHG4JU2C', 'thread_ts':               
+      '1758104303.787789', 'reply_count': 2, 'reply_users_count': 1,            
+      'latest_reply': '1758106007.750409', 'reply_users': ['U090E0F435W'],      
+      'is_locked': False, 'subscribed': False, 'blocks': [{'type': 'rich_text', 
+      'block_id': 'vjYF0', 'elements': [{'type': 'rich_text_section',           
+      'elements': [{'type': 'user', 'user_id': 'U05L2T0H6S3'}, {'type': 'text', 
+      'text': ' bla bla'}]}]}], 'channel_name': 'alerts-testing-operations',    
+      'url': 'https://slack.com/archives/C03P98HRUSG/p1758104303787789'},       
+      {'user': 'U090E0F435W', 'type': 'message', 'ts': '1758104288.549349',     
+      'client_msg_id': 'e35ce5fe-a59e-4756-a364-4d7665c37b46', 'text':          
+      '<@U05L2T0H6S3>', 'team': 'TEHG4JU2C', 'blocks': [{'type': 'rich_text',   
+      'block_id': 'UJcUC', 'elements': [{'type': 'rich_text_section',           
+      'elements': [{'type': 'user', 'user_id': 'U05L2T0H6S3'}]}]}],             
+      'channel_name': 'alerts-testing-operations', 'url':                       
+      'https://slack.com/archives/C03P98HRUSG/p1758104288549349'}, {'user':     
+      'U02EHPYGM4Z', 'type': 'message', 'ts': '1758099740.405689',              
+      'client_msg_id': 'a25cb2f8-80f7-43a3-9be0-63198a6af5cf', 'text':          
+      '.........................................................................
+      ..........................................................................
+      ..........................................................................
+      ..........................................................................
+      ..........................................................................
+      ...........................', 'team': 'TEHG4JU2C', 'blocks': [{'type':    
+      'rich_text', 'block_id': '27kbx', 'elements': [{'type':                   
+      'rich_text_section', 'elements': [{'type': 'text', 'text':                
+      '.........................................................................
+      ..........................................................................
+      ..........................................................................
+      ..........................................................................
+      ..........................................................................
+      ...........................'}]}]}], 'channel_name':                       
+      'alerts-testing-operations', 'url':                                       
+      'https://slack.com/archives/C03P98HRUSG/p1758099740405689'}, {'user':     
+      'U02EHPYGM4Z', 'type': 'message', 'ts': '1758099740.005459',              
+      'client_msg_id': '0cc01308-ba32-459a-b5d7-d4df3e0b055d', 'text':          
+      '.........................................................................
+      ..........................................................................
+      ..........................................................................
+      ..........................................................................
+      ..........................................................................
+      ...........................', 'team': 'TEHG4JU2C', 'blocks': [{'type':    
+      'rich_text', 'block_id': '27kbx', 'elements': [{'type':                   
+      'rich_text_section', 'elements': [{'type': 'text', 'text':                
+      '.........................................................................
+      ..........................................................................
+      ..........................................................................
+      ..........................................................................
+      ..........................................................................
+      ...........................'}]}]}], 'channel_name':                       
+      'alerts-testing-operations', 'url':                                       
+      'https://slack.com/archives/C03P98HRUSG/p1758099740005459'}, {'user':     
+      'U02EHPYGM4Z', 'type': 'message', 'ts': '1758099739.600989',              
+      'client_msg_id': 'dbb535bf-a113-4879-a5e8-c18e889272bd', 'text':          
+      '.........................................................................
+      ..........................................................................
+      ..........................................................................
+      ..........................................................................
+      ..........................................................................
+      ...........................', 'team': 'TEHG4JU2C', 'blocks': [{'type':    
+      'rich_text', 'block_id': '27kbx', 'elements': [{'type':                   
+      'rich_text_section', 'elements': [{'type': 'text', 'text':                
+      '.........................................................................
+      ..........................................................................
+      ..........................................................................
+      ..........................................................................
+      ..........................................................................
+      ...........................'}]}]}], 'channel_name':                       
+      'alerts-testing-operations', 'url':                                       
+      'https://slack.com/archives/C03P98HRUSG/p1758099739600989'}]              
+DEBUG **********************  TOOL METRICS  **********************              
+DEBUG * Duration:                    10.5764s                                   
+DEBUG **********************  TOOL METRICS  **********************              
